@@ -1,0 +1,54 @@
+{% extends "digital-land-frontend/layouts/base.jinja" %}
+{%- from 'govuk_frontend_jinja/components/accordion/macro.html' import govukAccordion -%}
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{%- from 'govuk_frontend_jinja/components/breadcrumbs/macro.html' import govukBreadcrumbs -%}
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/character-count/macro.html' import govukCharacterCount -%}
+{%- from 'govuk_frontend_jinja/components/checkboxes/macro.html' import govukCheckboxes -%}
+{%- from 'govuk_frontend_jinja/components/cookie-banner/macro.html' import govukCookieBanner -%}
+{%- from 'govuk_frontend_jinja/components/date-input/macro.html' import govukDateInput -%}
+{%- from 'govuk_frontend_jinja/components/details/macro.html' import govukDetails -%}
+{%- from 'govuk_frontend_jinja/components/error-message/macro.html' import govukErrorMessage -%}
+{%- from 'govuk_frontend_jinja/components/error-summary/macro.html' import govukErrorSummary -%}
+{%- from 'govuk_frontend_jinja/components/fieldset/macro.html' import govukFieldset -%}
+{%- from 'govuk_frontend_jinja/components/file-upload/macro.html' import govukFileUpload -%}
+{%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
+{%- from 'govuk_frontend_jinja/components/header/macro.html' import govukHeader -%}
+{%- from 'govuk_frontend_jinja/components/hint/macro.html' import govukHint -%}
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+{%- from 'govuk_frontend_jinja/components/label/macro.html' import govukLabel -%}
+{%- from 'govuk_frontend_jinja/components/notification-banner/macro.html' import govukNotificationBanner -%}
+{%- from 'govuk_frontend_jinja/components/panel/macro.html' import govukPanel -%}
+{%- from 'govuk_frontend_jinja/components/phase-banner/macro.html' import govukPhaseBanner -%}
+{%- from 'govuk_frontend_jinja/components/radios/macro.html' import govukRadios -%}
+{%- from 'govuk_frontend_jinja/components/select/macro.html' import govukSelect -%}
+{%- from 'govuk_frontend_jinja/components/skip-link/macro.html' import govukSkipLink -%}
+{%- from 'govuk_frontend_jinja/components/summary-list/macro.html' import govukSummaryList -%}
+{%- from 'govuk_frontend_jinja/components/table/macro.html' import govukTable -%}
+{%- from 'govuk_frontend_jinja/components/tabs/macro.html' import govukTabs -%}
+{%- from 'govuk_frontend_jinja/components/tag/macro.html' import govukTag -%}
+{%- from 'govuk_frontend_jinja/components/textarea/macro.html' import govukTextarea -%}
+{%- from 'govuk_frontend_jinja/components/warning-text/macro.html' import govukWarningText -%}
+{% set htmlClasses = (htmlClasses | d('')) %}
+
+{% block headIcons %}
+  <link rel="icon" type="image/svg+xml" href="{{ assetPath | default('/static') }}/govuk/images/favicon.svg">
+  <link rel="shortcut icon" href="{{ assetPath | default('/static') }}/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="{{ assetPath | default('/static') }}/images/safari-pinned-tab.svg" color="#062058">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ assetPath | default('/static') }}/images/dl-apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="{{ assetPath | default('/static') }}/images/dl-apple-touch-icon-167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="{{ assetPath | default('/static') }}/images/dl-apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" href="{{ assetPath | default('/static') }}/images/apple-touch-icon.png">
+  <meta name="msapplication-TileColor" content="#062058">
+  <meta name="msapplication-config" content="{{ assetPath | default('/static') }}/images/browserconfig.xml">
+  <meta name="theme-color" content="#062058">
+{% endblock %}
+
+{% block stylesheets %}
+  <link href="{{ assetPath }}/stylesheets/application.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block mastHead %}
+  {% include 'partials/mast-head.html' %}
+{% endblock mastHead %}

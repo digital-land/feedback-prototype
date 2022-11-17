@@ -1,0 +1,13 @@
+{% from "digital-land-frontend/components/header-bar/macro.jinja" import dlHeaderBar %}
+{{ dlHeaderBar({
+    "fullWidth": fullWidthHeader,
+    "transaction": {
+      "name": "Feedback"
+    },
+    "items": [
+      {
+        'text': 'Website',
+        'href': 'https://digital-land.info'
+      }
+    ]
+}) }}

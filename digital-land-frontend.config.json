@@ -1,0 +1,8 @@
+{
+  "scssPath": "./assets/scss",
+  "jsOutputPath": "application/static/javascripts",
+  "stylesheetsOutputPath": "application/static/stylesheets",
+  "watchPaths": "'./assets/scss/**/*.scss' './assets/javascripts/**/*.js'",
+  "govukOutputPath": "application/static",
+  "imagesOutputPath": "application/static/images"
+}

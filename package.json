@@ -1,0 +1,34 @@
+{
+  "name": "feedback",
+  "version": "0.0.1",
+  "description": "A tool to help data providers understand whether their data meets a digital land specification",
+  "scripts": {
+    "flask": "flask run",
+    "copy:images_shared": "npm run nps copy.images",
+    "copy:images_local": "npx copyfiles assets/images/**/*.{png,ico,svg,jpg,jpeg,webp} application/static/images -u 2",
+    "copy:images": "run-s copy:images_shared copy:images_local",
+    "watch:assets": "npm run nps watch.assets",
+    "watch:pages": "npm run nps watch.pages",
+    "watch": "npm-run-all --parallel watch:*",
+    "nps": "nps -c ./node_modules/digital-land-frontend/package-scripts.js",
+    "postinstall": "npm run nps copy.javascripts && npm run nps build.stylesheets && npm run nps copy.govukAssets && npm run copy:images",
+    "start": "run-p watch flask"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digital-land/feedback-prototype"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/digital-land/feedback-prototype/issues"
+  },
+  "dependencies": {
+    "digital-land-frontend": "https://gitpkg.now.sh/digital-land/digital-land-frontend/package?main",
+    "govuk-frontend": "^4.1.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "standardx": "^7.0.0"
+  }
+}
