@@ -1,0 +1,23 @@
+{% extends "layouts/layout.html" %}
+
+{% block main %}
+
+  <main id="app-main">
+
+    <header class="app-page-header govuk-!-margin-bottom-6">
+      <div class="app-page-header__content">
+        {% if pageData.caption %}<span class="govuk-caption-l">{{ pageData.caption }}</span>{% endif %}
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageData.title | default(routeData.organisation | default('title here')) | title  }}</h1>
+      </div>
+    </header>
+
+    <section id="app-content" class="govuk-width-container">
+      {% block content %}
+
+      {% endblock content %}
+    </section>
+
+  </main>
+
+
+{% endblock main %}

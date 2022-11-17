@@ -4,6 +4,8 @@ $govuk-assets-path: "/static/govuk/assets/";
 $govuk-global-styles: true;
 $govuk-new-link-styles: true;
 
+$app-brand-colour: #012169;
+
 @import "digital-land-frontend/dl-frontend";
 
 @import "components/all";

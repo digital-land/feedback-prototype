@@ -1,0 +1,16 @@
+.app-page-header {
+  background: $app-brand-colour;
+  padding: govuk-spacing(6) 0;
+  color: white;
+  margin-top: -10px;
+  position: relative;
+  * {
+    color: inherit;
+  }
+
+  &__content {
+    // https://frontend.design-system.service.gov.uk/sass-api-reference/#govuk-width-container
+    @include govuk-width-container($width: $govuk-page-width);
+  }
+
+}
