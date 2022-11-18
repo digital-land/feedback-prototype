@@ -1,0 +1,18 @@
+.app-\!-float {
+  &-left {
+    float: left;
+    @at-root img {
+      margin-right: govuk-spacing(3);
+    }
+  }
+  &-right {
+    float: right;
+    @at-root img {
+      margin-left: govuk-spacing(3);
+    }
+  }
+}
+
+.app-\!-self-clear {
+  @include govuk-clearfix;
+}

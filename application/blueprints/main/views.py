@@ -11,5 +11,5 @@ def index():
 @main.route("/organisation/<organisation>")
 def organisation(organisation):
     return render_template(
-        "organisation.html", routeData={"organisation": organisation}
+        "organisation.html", templateData={"organisation": organisation}
     )

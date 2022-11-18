@@ -7,13 +7,31 @@
     <header class="app-page-header govuk-!-margin-bottom-6">
       <div class="app-page-header__content">
         {% if pageData.caption %}<span class="govuk-caption-l">{{ pageData.caption }}</span>{% endif %}
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageData.title | default(routeData.organisation | default('title here')) | title  }}</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageData.title | default(templateData.organisation | default('title here')) | title  }}</h1>
       </div>
     </header>
 
-    <section id="app-content" class="govuk-width-container">
-      {% block content %}
+    {% if pageData.summary  %}
+      <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
+        {% block page_summary %}
+          <h2 class="govuk-heading-l">{{ pageData.summary.title | default('pageData.summary.title') }}</h2>
+          {% block page_summary_content %}{% endblock page_summary_content %}
+          <hr class="govuk-section-break govuk-section-break--visible app-!-self-clear">
+        {% endblock page_summary %}
+      </section>
+      <!-- /#app-page-summary.app-page-summary -->
+    {% endif %}
 
+    <section id="app-content" class="govuk-width-container app-content">
+      {% block content %}
+        <div class="govuk-grid-row">
+          <div id="content-primary" class="govuk-grid-column-two-thirds">
+            {% block content_primary %}{% endblock content_primary %}
+          </div>
+          <div id="content-secondary" class="govuk-grid-column-one-third">
+            {% block content_secondary %}{% endblock content_secondary %}
+          </div>
+        </div>
       {% endblock content %}
     </section>
 

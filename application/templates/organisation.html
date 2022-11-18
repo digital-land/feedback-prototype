@@ -2,10 +2,20 @@
 {% block pageTitle %}Feedback{% endblock %}
 
 {% set pageData = {
-  'title': routeData.organisation,
-  'caption': 'Organisation'
+  'title': templateData.organisation,
+  'caption': 'Organisation',
+  'summary': {
+    'show': True,
+    'title': 'Summary',
+    'text':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate harum doloremque eos, accusamus aperiam est sint saepe aspernatur temporibus ut velit. Doloribus cum consectetur, ut veritatis fuga sapiente. Autem, obcaecati?'
+  }
 } %}
 
-{% block content %}
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur delectus temporibus asperiores quae fuga unde, sequi impedit accusamus doloremque praesentium fugiat totam in, quidem pariatur consequatur fugit, quod alias maiores.</p>
+{% block page_summary_content %}
+  <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="200" alt="" class="app-!-float-right">
+  <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsam praesentium quibusdam ea voluptates enim! Repellat exercitationem, vero reprehenderit optio quia fugiat at assumenda ratione iusto. Debitis optio repellendus impedit labore?</p>
+{% endblock page_summary_content %}
+
+{% block content_primary %}
+
 {% endblock %}

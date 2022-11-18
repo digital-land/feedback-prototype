@@ -7,5 +7,5 @@ $govuk-new-link-styles: true;
 $app-brand-colour: #012169;
 
 @import "digital-land-frontend/dl-frontend";
-
 @import "components/all";
+@import "utilities.scss";
