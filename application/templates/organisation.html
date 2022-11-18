@@ -6,16 +6,19 @@
   'caption': 'Organisation',
   'summary': {
     'show': True,
-    'title': 'Summary',
-    'text':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate harum doloremque eos, accusamus aperiam est sint saepe aspernatur temporibus ut velit. Doloribus cum consectetur, ut veritatis fuga sapiente. Autem, obcaecati?'
   }
 } %}
 
 {% block page_summary_content %}
-  <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="200" alt="" class="app-!-float-right">
-  <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsam praesentium quibusdam ea voluptates enim! Repellat exercitationem, vero reprehenderit optio quia fugiat at assumenda ratione iusto. Debitis optio repellendus impedit labore?</p>
+  <div class="app-!-self-clear">
+    <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="100" alt="" class="app-!-float-right">
+    <p>This organisation is part of the open digital planning programme.</p>
+  </div>
 {% endblock page_summary_content %}
 
 {% block content_primary %}
+
+  <h2 class="govuk-heading-l" id="data-from-this-organisation">Data provided by {{ templateData.organisation | title }}</h2>
+
 
 {% endblock %}

@@ -11,12 +11,12 @@
       </div>
     </header>
 
-    {% if pageData.summary  %}
+    {% if pageData.summary.show  %}
       <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
         {% block page_summary %}
-          <h2 class="govuk-heading-l">{{ pageData.summary.title | default('pageData.summary.title') }}</h2>
+          {% if pageData.summary.title %}<h2 class="govuk-heading-l">{{ pageData.summary.title | default('pageData.summary.title') }}</h2>{% endif %}
           {% block page_summary_content %}{% endblock page_summary_content %}
-          <hr class="govuk-section-break govuk-section-break--visible app-!-self-clear">
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible app-!-self-clear">
         {% endblock page_summary %}
       </section>
       <!-- /#app-page-summary.app-page-summary -->

@@ -6,6 +6,7 @@ Flask app factory class
 from flask import Flask
 from flask.cli import load_dotenv
 
+from application.filters import debug
 from application.models import *  # noqa
 
 load_dotenv()
@@ -51,6 +52,7 @@ def register_context_processors(app):
 
 
 def register_filters(app):
+    app.jinja_env.filters["debug"] = debug
     pass
 
 

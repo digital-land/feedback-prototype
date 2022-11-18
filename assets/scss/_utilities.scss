@@ -1,13 +1,13 @@
 .app-\!-float {
   &-left {
     float: left;
-    @at-root img {
+    @at-root img, figure {
       margin-right: govuk-spacing(3);
     }
   }
   &-right {
     float: right;
-    @at-root img {
+    @at-root img, figure {
       margin-left: govuk-spacing(3);
     }
   }
