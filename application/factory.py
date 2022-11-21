@@ -57,7 +57,10 @@ def register_filters(app):
 
 
 def register_extensions(app):
-    pass
+    from application.extensions import db, migrate
+
+    db.init_app(app)
+    migrate.init_app(app)
 
 
 def register_templates(app):
@@ -81,4 +84,6 @@ def register_templates(app):
 
 
 def register_commands(app):
-    pass
+    from application.commands import data_cli
+
+    app.cli.add_command(data_cli)

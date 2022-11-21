@@ -37,3 +37,15 @@ reqs:
 
 sync:
 	 python -m piptools sync requirements/requirements.txt requirements/dev-requirements.txt
+
+upgrade-db:
+	flask db upgrade
+
+downgrade-db:
+	flask db downgrade
+
+data-load:
+	flask data load
+
+data-drop:
+	flask data drop
