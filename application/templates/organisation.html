@@ -18,9 +18,11 @@
 
 {% block content_primary %}
 
-  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data provided by {{ templateData.organisation | title }}</h2>
+  {% set itemsLabel = 'Total'  %}
 
-  <p class="govuk-hint">{{ templateData.organisation | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk</p>
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-this-organisation">Data provided by {{ templateData.organisation | title }}</h2>
+
+  <p class="govuk-hint">{{ templateData.organisation | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
 
   {{
     govukTable({
@@ -29,7 +31,7 @@
           'text': 'Dataset name'
         },
         {
-          'text': 'Number',
+          'text': itemsLabel,
           'format': 'numeric'
         }
       ],
@@ -58,9 +60,9 @@
 
   <hr class="govuk-section-break govuk-section-break--l ">
 
-  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data provided by other organisations</h2>
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-other-organisations">Data provided by other organisations</h2>
 
-  <p class="govuk-hint">Description of this here</p>
+  <p class="govuk-hint">The following data is being collected from organisations other than {{ templateData.organisation | title }}.</p>
 
   {{
     govukTable({
@@ -69,7 +71,7 @@
           'text': 'Dataset name'
         },
         {
-          'text': 'Number',
+          'text': itemsLabel,
           'format': 'numeric'
         }
       ],
@@ -98,7 +100,7 @@
 
   <hr class="govuk-section-break govuk-section-break--l">
 
-  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data we need</h2>
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-needed">Data we need</h2>
 
   <p class="govuk-hint">This is a list of data we would like to collect from {{ templateData.organisation | title }} but do not yet have sources for.</p>
 
@@ -109,7 +111,7 @@
           'text': 'Dataset name'
         },
         {
-          'text': 'Number',
+          'text': itemsLabel,
           'format': 'numeric'
         }
       ],

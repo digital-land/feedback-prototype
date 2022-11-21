@@ -16,3 +16,17 @@
 .app-\!-self-clear {
   @include govuk-clearfix;
 }
+
+
+.app-heading-section {
+  $_heading_section_padding: .4em;
+  $_heading_section_border: 3px solid $app-brand-colour;
+  &--top {
+    padding-top: $_heading_section_padding;
+    border-top: $_heading_section_border;
+  }
+  &--bottom {
+    padding-bottom: $_heading_section_padding;
+    border-bottom: $_heading_section_border;
+  }
+}
