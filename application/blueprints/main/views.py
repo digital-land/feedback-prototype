@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, abort, render_template
+
+from application.models import Organisation
 
 main = Blueprint("main", __name__, template_folder="templates")
 
@@ -8,8 +10,10 @@ def index():
     return render_template("homepage.html")
 
 
-@main.route("/organisation/<organisation>")
+@main.route("/organisation/<string:organisation>")
 def organisation(organisation):
-    return render_template(
-        "organisation.html", templateData={"organisation": organisation}
-    )
+    org = Organisation.query.get(organisation)
+    if not org:
+        return abort(404)
+
+    return render_template("organisation.html", organisation=org)

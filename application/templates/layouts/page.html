@@ -7,7 +7,7 @@
     <header class="app-page-header govuk-!-margin-bottom-6">
       <div class="app-page-header__content">
         {% if pageData.caption %}<span class="govuk-caption-l">{{ pageData.caption }}</span>{% endif %}
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageData.title | default(templateData.organisation | default('title here')) | title  }}</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageData.title | default(organisation.name | default('title here')) | title  }}</h1>
       </div>
     </header>
 
