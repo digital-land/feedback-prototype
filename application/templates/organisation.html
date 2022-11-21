@@ -12,13 +12,131 @@
 {% block page_summary_content %}
   <div class="app-!-self-clear">
     <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="100" alt="" class="app-!-float-right">
-    <p>This organisation is part of the open digital planning programme.</p>
+    <p>This organisation is a member of the open digital planning programme.</p>
   </div>
 {% endblock page_summary_content %}
 
 {% block content_primary %}
 
-  <h2 class="govuk-heading-l" id="data-from-this-organisation">Data provided by {{ templateData.organisation | title }}</h2>
+  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data provided by {{ templateData.organisation | title }}</h2>
+
+  <p class="govuk-hint">{{ templateData.organisation | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk</p>
+
+  {{
+    govukTable({
+      'head': [
+        {
+          'text': 'Dataset name'
+        },
+        {
+          'text': 'Number',
+          'format': 'numeric'
+        }
+      ],
+      'rows': [
+        [
+          {
+            'text': 'Article 4 Directions'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        [
+          {
+            'text': 'Article 4 Direction areas'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        ]
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--l ">
+
+  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data provided by other organisations</h2>
+
+  <p class="govuk-hint">Description of this here</p>
+
+  {{
+    govukTable({
+      'head': [
+        {
+          'text': 'Dataset name'
+        },
+        {
+          'text': 'Number',
+          'format': 'numeric'
+        }
+      ],
+      'rows': [
+        [
+          {
+            'text': 'Article 4 Directions'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        [
+          {
+            'text': 'Article 4 Direction areas'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        ]
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--l">
+
+  <h2 class="govuk-heading-m" id="data-from-this-organisation">Data we need</h2>
+
+  <p class="govuk-hint">This is a list of data we would like to collect from {{ templateData.organisation | title }} but do not yet have sources for.</p>
+
+  {{
+    govukTable({
+      'head': [
+        {
+          'text': 'Dataset name'
+        },
+        {
+          'text': 'Number',
+          'format': 'numeric'
+        }
+      ],
+      'rows': [
+        [
+          {
+            'text': 'Article 4 Directions'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        [
+          {
+            'text': 'Article 4 Direction areas'
+          },
+          {
+            'text': '85',
+            'format': 'numeric'
+          },
+        ],
+        ]
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--l">
 
 
 {% endblock %}
