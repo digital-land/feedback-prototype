@@ -5,7 +5,7 @@ from flask.cli import AppGroup
 from sqlalchemy.dialects.postgresql import insert
 
 from application.extensions import db
-from application.models import Organisation
+from application.models import Dataset, Organisation
 
 data_cli = AppGroup("data")
 logger = logging.getLogger(__name__)
@@ -23,6 +23,11 @@ FROM organisation WHERE
     "entry_date" IS NULL
     OR "entry_date" = ""
   );
+"""
+
+dataset_sql = """
+SELECT dataset, name, text
+FROM dataset;
 """
 
 
@@ -59,3 +64,26 @@ def load_data():
     db.session.execute(stmt)
     db.session.commit()
     print("load organisations done")
+
+    print("load datasets")
+    url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
+    resp = requests.get(url)
+    resp.raise_for_status()
+    data = resp.json()
+    inserts = []
+    for dataset in data:
+        inserts.append(
+            {
+                "dataset": dataset["dataset"],
+                "name": dataset["name"],
+                "text": dataset["text"],
+            }
+        )
+
+    stmt = insert(Dataset).values(inserts)
+    stmt = stmt.on_conflict_do_update(
+        index_elements=[Dataset.dataset], set_=dict(name=stmt.excluded.name)
+    )
+    db.session.execute(stmt)
+    db.session.commit()
+    print("load datasets")
