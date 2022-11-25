@@ -13,6 +13,8 @@ from application.extensions import db
 from application.models import Dataset, Entity, Organisation
 
 data_cli = AppGroup("data")
+
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -74,7 +76,8 @@ def load_data():
 
     from flask import current_app
 
-    print("load organisations")
+    logger.info("loading organisations")
+
     datasette_url = current_app.config["DATASETTE_URL"]
     url = (
         f"{datasette_url}/digital-land.json?sql={organisation_sql.strip()}&_shape=array"
@@ -99,9 +102,9 @@ def load_data():
     )
     db.session.execute(stmt)
     db.session.commit()
-    print("load organisations done")
+    logger.info("finished loading organisations")
 
-    print("load datasets")
+    logger.info("loading datasets")
 
     # url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
     # resp = requests.get(url)
@@ -133,7 +136,7 @@ def load_data():
     )
     db.session.execute(stmt)
     db.session.commit()
-    print("load datasets")
+    logger.info("finished loading datasets")
 
 
 @data_cli.command("drop")
@@ -146,7 +149,7 @@ def drop_data():
     stmt = delete(Entity)
     db.session.execute(stmt)
     db.session.commit()
-    print("data deleted")
+    logger.info("data deleted")
 
 
 @data_cli.command("entities")
@@ -157,11 +160,12 @@ def load_entities():
 
     datasette_url = current_app.config["DATASETTE_URL"]
 
-    print("generate report")
+    logger.info("loading entities")
     datasets = Dataset.query.all()
     request_data = [
         {
-            "organisation": organisation.entity,
+            "organisation": organisation.organisation,
+            "organisation_entity": organisation.entity,
             "datasets": [ds.dataset for ds in datasets],
         }
         for organisation in Organisation.query.all()
@@ -182,7 +186,8 @@ def load_entities():
         cursor = conn.cursor()
 
         for item in request_data:
-            organisation_entity = item["organisation"]
+            logger.info(f"loading data for {item['organisation']}")
+            organisation_entity = item["organisation_entity"]
             entities = []
             for dataset in item["datasets"]:
                 data = cursor.execute(
@@ -190,18 +195,22 @@ def load_entities():
                         dataset=dataset, organisation_entity=organisation_entity
                     )
                 )
-                for row in data:
-                    if row is not None:
-                        entities.append(Entity(**_row_to_entity(row)))
-                if entities:
-                    with db.session() as s:
-                        s.bulk_save_objects(entities)
-                        s.commit()
-                        print(
-                            f"Saved {len(entities)} for organisation {organisation_entity}"
-                        )
-                        entities = []
+                if data:
+                    for row in data:
+                        if row is not None:
+                            entities.append(Entity(**_row_to_entity(row)))
+                    if entities:
+                        with db.session() as s:
+                            s.bulk_save_objects(entities)
+                            s.commit()
+                            logger.info(
+                                f"saved {len(entities)} {dataset} for {item['organisation']}"
+                            )
+                            entities = []
+                else:
+                    logger.info(f"no {dataset} found for {item['organisation']}")
         conn.close()
+        logger.info("finished loading entities")
     finally:
         os.unlink(sqlite_file_name)
 
