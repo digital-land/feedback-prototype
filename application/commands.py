@@ -1,6 +1,8 @@
-import concurrent
+import json
 import logging
-import urllib.parse
+import os
+import sqlite3
+import tempfile
 
 import requests
 from flask.cli import AppGroup
@@ -8,7 +10,7 @@ from sqlalchemy import delete
 from sqlalchemy.dialects.postgresql import insert
 
 from application.extensions import db
-from application.models import Dataset, Organisation
+from application.models import Dataset, Entity, Organisation
 
 data_cli = AppGroup("data")
 logger = logging.getLogger(__name__)
@@ -31,6 +33,25 @@ FROM organisation WHERE
 dataset_sql = """
 SELECT dataset, name, text
 FROM dataset;
+"""
+
+
+entity_sql = """
+SELECT
+    e.entity as entity,
+    nullif(e.name, "") as name,
+    nullif(e.entry_date, "") as entry_date,
+    nullif(e.start_date, "") as start_date,
+    nullif(e.end_date, "") as end_date,
+    nullif(e.dataset, "") as dataset,
+    nullif(e.json, "") as json,
+    nullif(e.organisation_entity, "") as organisation_entity,
+    nullif(e.prefix, "") as prefix,
+    nullif(e.reference, "") as reference,
+    nullif(e.geojson, "") as geojson
+FROM entity e
+WHERE e.dataset = '{dataset}'
+AND e.organisation_entity = {organisation_entity};
 """
 
 # temp use only these datasets
@@ -81,6 +102,7 @@ def load_data():
     print("load organisations done")
 
     print("load datasets")
+
     # url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
     # resp = requests.get(url)
     # resp.raise_for_status()
@@ -96,6 +118,7 @@ def load_data():
     #     )
 
     # tmp use ripa datasets only
+
     inserts = []
     for dataset in RIPA_DATASETS:
         inserts.append(
@@ -120,43 +143,73 @@ def drop_data():
     stmt = delete(Organisation)
     db.session.execute(stmt)
     db.session.commit()
+    stmt = delete(Entity)
+    db.session.execute(stmt)
+    db.session.commit()
     print("data deleted")
 
 
-@data_cli.command("report")
-def report():
+@data_cli.command("entities")
+def load_entities():
     from flask import current_app
+
+    from application.extensions import db
 
     datasette_url = current_app.config["DATASETTE_URL"]
 
     print("generate report")
     datasets = Dataset.query.all()
     request_data = [
-        {"organisation": organisation, "datasets": [ds.dataset for ds in datasets]}
+        {
+            "organisation": organisation.entity,
+            "datasets": [ds.dataset for ds in datasets],
+        }
         for organisation in Organisation.query.all()
     ]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        futures = {
-            executor.submit(__fetch_data, datasette_url, data) for data in request_data
-        }
-        for future in concurrent.futures.as_completed(futures):
-            print(f"The outcome is {future.result()}")
+    try:
+        out = tempfile.NamedTemporaryFile(mode="w+b", suffix=".db", delete=False)
+        sqlite_file_name = out.name
+        sqlite_ = requests.get(f"{datasette_url}/entity.db", stream=True)
+        for chunk in sqlite_.iter_content(chunk_size=1024):
+            if chunk:
+                out.write(chunk)
+        out.flush()
+        out.close()
+
+        conn = sqlite3.connect(sqlite_file_name)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        for item in request_data:
+            organisation_entity = item["organisation"]
+            entities = []
+            for dataset in item["datasets"]:
+                data = cursor.execute(
+                    entity_sql.format(
+                        dataset=dataset, organisation_entity=organisation_entity
+                    )
+                )
+                for row in data:
+                    if row is not None:
+                        entities.append(Entity(**_row_to_entity(row)))
+                if entities:
+                    with db.session() as s:
+                        s.bulk_save_objects(entities)
+                        s.commit()
+                        print(
+                            f"Saved {len(entities)} for organisation {organisation_entity}"
+                        )
+                        entities = []
+        conn.close()
+    finally:
+        os.unlink(sqlite_file_name)
 
 
-def __fetch_data(datasette_url, data):
-    organisation = data["organisation"]
-    datasets = data["datasets"]
-    datasets_url_encoded = urllib.parse.quote(",".join(datasets))
-    resp = requests.head(datasette_url)
-    url = f"{datasette_url}/entity/entity.json?organisation_entity__exact={organisation.entity}&_shape=array&dataset__in={datasets_url_encoded}&_nocol=geometry_geom&_nocol=point_geom"  # noqa
-    if resp.status_code == 200:
-        print(f"Querying {url}")
-        resp = requests.get(url)
-        resp.raise_for_status()
-        data = resp.json()
-        for d in data:
-            print(d)
-    else:
-        print("No data")
-    return f"Done fetching data for {organisation.organisation}"
+def _row_to_entity(row):
+    entity = {k: v for k, v in dict(row).items() if v}
+    if "json" in entity:
+        entity["json"] = json.loads(entity["json"])
+    if "geojson" in entity:
+        entity["geojson"] = json.loads(entity["geojson"])
+    return entity

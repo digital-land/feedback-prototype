@@ -7,3 +7,4 @@ jsonpickle
 Flask-SQLAlchemy
 Flask-Migrate
 requests
+pycurl
