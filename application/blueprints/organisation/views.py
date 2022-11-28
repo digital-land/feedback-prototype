@@ -7,7 +7,7 @@ organisation = Blueprint("organisation", __name__, template_folder="templates")
 
 
 @organisation.route("/organisation/<string:organisation>")
-def organisation_report(organisation):
+def organisation_data(organisation):
     org = Organisation.query.get(organisation)
     if not org:
         return abort(404)
