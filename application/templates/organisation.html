@@ -1,13 +1,14 @@
 {% extends "layouts/page.html" %}
 {% block pageTitle %}Feedback{% endblock %}
 
-{% set pageData = {
+{% set page_data = {
   'title': organisation.name,
   'caption': 'Organisation',
   'summary': {
-    'show': True,
+      'show': True,
+    }
   }
-} %}
+%}
 
 {% block page_summary_content %}
   <div class="app-!-self-clear">
@@ -35,26 +36,7 @@
           'format': 'numeric'
         }
       ],
-      'rows': [
-        [
-          {
-            'text': 'Article 4 Directions'
-          },
-          {
-            'text': '85',
-            'format': 'numeric'
-          },
-        ],
-        [
-          {
-            'text': 'Article 4 Direction areas'
-          },
-          {
-            'text': '85',
-            'format': 'numeric'
-          },
-        ],
-        ]
+      'rows': rows
     })
     }}
 
@@ -78,19 +60,10 @@
       'rows': [
         [
           {
-            'text': 'Article 4 Directions'
+            'text': 'Conservation areas'
           },
           {
-            'text': '85',
-            'format': 'numeric'
-          },
-        ],
-        [
-          {
-            'text': 'Article 4 Direction areas'
-          },
-          {
-            'text': '85',
+            'text': '58',
             'format': 'numeric'
           },
         ],
@@ -118,19 +91,10 @@
       'rows': [
         [
           {
-            'text': 'Article 4 Directions'
+            'text': 'Central activities zones'
           },
           {
-            'text': '85',
-            'format': 'numeric'
-          },
-        ],
-        [
-          {
-            'text': 'Article 4 Direction areas'
-          },
-          {
-            'text': '85',
+            'text': '0',
             'format': 'numeric'
           },
         ],
