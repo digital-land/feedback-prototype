@@ -5,7 +5,10 @@
   <h1 class="govuk-heading-l">Views</h1>
 
   <ul class="govuk-list gov uk-list--spaced">
-    <li><a href="{{ url_for('organisation.organisation_data', organisation ='local-authority:BUC') }}">Organisation view</a></li>
+    {% for org in organisations %}
+      <li><a href="{{ url_for('provider.provider_summary', organisation = org.entity) }}">{{ org.name}}</a></li>
+    {% endfor %}
+
   </ul>
 
 {% endblock %}

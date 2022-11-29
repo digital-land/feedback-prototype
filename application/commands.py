@@ -10,7 +10,7 @@ from sqlalchemy import delete
 from sqlalchemy.dialects.postgresql import insert
 
 from application.extensions import db
-from application.models import Dataset, Entity, Organisation
+from application.models import Dataset, Entity, Provider
 
 data_cli = AppGroup("data")
 
@@ -53,7 +53,7 @@ SELECT
     nullif(e.geojson, "") as geojson
 FROM entity e
 WHERE e.dataset = '{dataset}'
-AND e.organisation_entity = {organisation_entity};
+AND e.organisation_entity = {provider_entity};
 """
 
 # temp use only these datasets
@@ -76,7 +76,7 @@ def load_data():
 
     from flask import current_app
 
-    logger.info("loading organisations")
+    logger.info("loading providers")
 
     datasette_url = current_app.config["DATASETTE_URL"]
     url = (
@@ -96,13 +96,13 @@ def load_data():
             }
         )
 
-    stmt = insert(Organisation).values(inserts)
+    stmt = insert(Provider).values(inserts)
     stmt = stmt.on_conflict_do_update(
-        index_elements=[Organisation.organisation], set_=dict(name=stmt.excluded.name)
+        index_elements=[Provider.entity], set_=dict(name=stmt.excluded.name)
     )
     db.session.execute(stmt)
     db.session.commit()
-    logger.info("finished loading organisations")
+    logger.info("finished loading providers")
 
     logger.info("loading datasets")
 
@@ -143,7 +143,7 @@ def load_data():
 def drop_data():
     stmt = delete(Dataset)
     db.session.execute(stmt)
-    stmt = delete(Organisation)
+    stmt = delete(Provider)
     db.session.execute(stmt)
     db.session.commit()
     stmt = delete(Entity)
@@ -164,11 +164,11 @@ def load_entities():
     datasets = Dataset.query.all()
     request_data = [
         {
-            "organisation": organisation.organisation,
-            "organisation_entity": organisation.entity,
+            "provider": provider.organisation,
+            "provider_entity": provider.entity,
             "datasets": [ds.dataset for ds in datasets],
         }
-        for organisation in Organisation.query.all()
+        for provider in Provider.query.all()
     ]
 
     try:
@@ -186,14 +186,12 @@ def load_entities():
         cursor = conn.cursor()
 
         for item in request_data:
-            logger.info(f"loading data for {item['organisation']}")
-            organisation_entity = item["organisation_entity"]
+            logger.info(f"loading data for {item['provider']}")
+            provider_entity = item["provider_entity"]
             entities = []
             for dataset in item["datasets"]:
                 data = cursor.execute(
-                    entity_sql.format(
-                        dataset=dataset, organisation_entity=organisation_entity
-                    )
+                    entity_sql.format(dataset=dataset, provider_entity=provider_entity)
                 )
                 if data:
                     for row in data:
@@ -204,7 +202,7 @@ def load_entities():
                             s.bulk_save_objects(entities)
                             s.commit()
                             logger.info(
-                                f"saved {len(entities)} {dataset} for {item['organisation']}"
+                                f"saved {len(entities)} {dataset} for {item['provider']}"
                             )
                             entities = []
                 else:

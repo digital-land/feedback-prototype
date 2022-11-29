@@ -1,14 +1,14 @@
 from flask import Blueprint, abort, render_template
 from sqlalchemy import func
 
-from application.models import Entity, Organisation
+from application.models import Entity, Provider
 
-organisation = Blueprint("organisation", __name__, template_folder="templates")
+provider = Blueprint("provider", __name__, template_folder="templates")
 
 
-@organisation.route("/organisation/<string:organisation>")
-def organisation_data(organisation):
-    org = Organisation.query.get(organisation)
+@provider.route("/provider/<string:organisation>")
+def provider_summary(organisation):
+    org = Provider.query.get(organisation)
     if not org:
         return abort(404)
 
@@ -29,3 +29,8 @@ def organisation_data(organisation):
         )
 
     return render_template("organisation.html", organisation=org, rows=rows)
+
+
+@provider.route("/provider/<string:organisation>/dataset/<string:dataset>")
+def provider_data(organisation):
+    pass

@@ -3,11 +3,11 @@ from sqlalchemy.dialects.postgresql import JSON
 from application.extensions import db
 
 
-class Organisation(db.Model):
-
-    organisation = db.Column(db.Text, primary_key=True, nullable=False)
+class Provider(db.Model):
+    entity = db.Column(db.BigInteger, primary_key=True, nullable=False)
+    organisation = db.Column(db.Text, nullable=False, unique=True)
     name = db.Column(db.Text, nullable=False)
-    entity = db.Column(db.Integer, nullable=False)
+    entities = db.relationship("Entity", back_populates="provider")
 
 
 class Dataset(db.Model):
@@ -26,6 +26,12 @@ class Entity(db.Model):
     geojson = db.Column(JSON)
     json = db.Column(JSON)
     name = db.Column(db.Text)
-    organisation_entity = db.Column(db.Integer, nullable=False)
     prefix = db.Column(db.Text)
     reference = db.Column(db.Text)
+
+    organisation_entity = db.Column(db.BigInteger, db.ForeignKey("provider.entity"))
+    provider = db.relationship("Provider", back_populates="entities")
+
+
+class Project(db.Model):
+    name = db.Column(db.Text, primary_key=True, nullable=False)
