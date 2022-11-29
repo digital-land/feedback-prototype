@@ -28,7 +28,12 @@ def provider_summary(organisation):
             ]
         )
 
-    return render_template("organisation.html", organisation=org, rows=rows)
+    return render_template(
+        "organisation.html",
+        organisation=org,
+        rows=rows,
+        page_data={"title": org.name, "summary": {"show": True}},
+    )
 
 
 @provider.route("/provider/<string:organisation>/dataset/<string:dataset>")
