@@ -6,7 +6,7 @@
 
   <ul class="govuk-list gov uk-list--spaced">
     {% for org in organisations %}
-      <li><a href="{{ url_for('provider.provider_summary', organisation = org.entity) }}">{{ org.name}}</a></li>
+      <li><a href="{{ url_for('provider.provider_summary', entity = org.entity) }}">{{ org.name}}</a></li>
     {% endfor %}
 
   </ul>
