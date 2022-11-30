@@ -6,15 +6,15 @@ from application.models import Entity, Organisation
 provider = Blueprint("provider", __name__, template_folder="templates")
 
 
-@provider.route("/provider/<string:organisation>")
-def provider_summary(organisation):
-    org = Organisation.query.filter(Organisation.entity == organisation).one()
-    if not org:
+@provider.route("/provider/<int:entity>")
+def provider_summary(entity):
+    organisation = Organisation.query.filter(Organisation.entity == entity).one()
+    if not organisation:
         return abort(404)
 
     data = (
         Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
-        .filter(Entity.organisation_entity == org.entity)
+        .filter(Entity.organisation_entity == organisation.entity)
         .group_by(Entity.dataset)
         .all()
     )
@@ -30,12 +30,12 @@ def provider_summary(organisation):
 
     return render_template(
         "provider.html",
-        organisation=org,
+        organisation=organisation,
         rows=rows,
-        page_data={"title": org.name, "summary": {"show": True}},
+        page_data={"title": organisation.name, "summary": {"show": True}},
     )
 
 
-@provider.route("/provider/<string:organisation>/dataset/<string:dataset>")
+@provider.route("/provider/<int:organisation>/dataset/<string:dataset>")
 def provider_data(organisation):
     pass
