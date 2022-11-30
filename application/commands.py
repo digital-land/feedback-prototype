@@ -10,7 +10,7 @@ from sqlalchemy import delete
 from sqlalchemy.dialects.postgresql import insert
 
 from application.extensions import db
-from application.models import Dataset, Entity, Provider
+from application.models import Dataset, Entity, Organisation, organisation_dataset
 
 data_cli = AppGroup("data")
 
@@ -37,6 +37,27 @@ SELECT dataset, name, text
 FROM dataset;
 """
 
+organisation_dataset_sql = """
+SELECT
+    od.organisation as organisation,
+    od.dataset as dataset,
+    od.project as project,
+    p.name as project_name,
+    od.provision_reason as provision_reason,
+    pr.name as provision_reason_name,
+    p.project_status as project_status,
+    ps.description as project_status_description,
+    od.specification,
+    od.notes
+FROM
+    organisation_dataset od,
+    project p,
+    project_status ps,
+    provision_reason pr
+WHERE od.project = p.project
+AND p.project_status = ps.project_status
+AND od.provision_reason = pr.provision_reason
+"""
 
 entity_sql = """
 SELECT
@@ -53,22 +74,16 @@ SELECT
     nullif(e.geojson, "") as geojson
 FROM entity e
 WHERE e.dataset = '{dataset}'
-AND e.organisation_entity = {provider_entity};
+AND e.organisation_entity = {organisation_entity};
 """
 
-# temp use only these datasets
-RIPA_DATASETS = set(
-    [
-        "article-4-direction",
-        "article-4-direction-area",
-        "conservation-area",
-        "listed-building",
-        "listed-building-outline",
-        "tree-preservation-order",
-        "tree-preservation-zone",
-        "tree",
-    ]
-)
+project_sql = """
+SELECT
+    project,
+    description,
+    name,
+    project_status
+FROM project;"""
 
 
 @data_cli.command("load")
@@ -96,60 +111,50 @@ def load_data():
             }
         )
 
-    stmt = insert(Provider).values(inserts)
-    stmt = stmt.on_conflict_do_update(
-        index_elements=[Provider.entity], set_=dict(name=stmt.excluded.name)
-    )
+    stmt = insert(Organisation).values(inserts)
     db.session.execute(stmt)
     db.session.commit()
     logger.info("finished loading providers")
 
     logger.info("loading datasets")
 
-    # url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
-    # resp = requests.get(url)
-    # resp.raise_for_status()
-    # data = resp.json()
-    # inserts = []
-    # for dataset in data:
-    #     inserts.append(
-    #         {
-    #             "dataset": dataset["dataset"],
-    #             "name": dataset["name"],
-    #             "text": dataset["text"],
-    #         }
-    #     )
-
-    # tmp use ripa datasets only
-
-    inserts = []
-    for dataset in RIPA_DATASETS:
-        inserts.append(
-            {
-                "dataset": dataset,
-                "name": dataset.replace("-", " ").capitalize(),
-            }
-        )
-    stmt = insert(Dataset).values(inserts)
-    stmt = stmt.on_conflict_do_update(
-        index_elements=[Dataset.dataset], set_=dict(name=stmt.excluded.name)
-    )
+    url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
+    resp = requests.get(url)
+    resp.raise_for_status()
+    data = resp.json()
+    stmt = insert(Dataset).values(data)
     db.session.execute(stmt)
     db.session.commit()
     logger.info("finished loading datasets")
 
+    logger.info("loading organisation_datasets")
+    url = f"{datasette_url}/digital-land.json?sql={organisation_dataset_sql.strip()}&_shape=array"
+    resp = requests.get(url)
+    resp.raise_for_status()
+    data = resp.json()
+    stmt = insert(organisation_dataset).values(data)
+    db.session.execute(stmt)
+    db.session.commit()
+    logger.info("finished loading organisation_datasets")
+
 
 @data_cli.command("drop")
 def drop_data():
-    stmt = delete(Dataset)
-    db.session.execute(stmt)
-    stmt = delete(Provider)
-    db.session.execute(stmt)
-    db.session.commit()
+    from application.models import Entity
+
     stmt = delete(Entity)
     db.session.execute(stmt)
     db.session.commit()
-    logger.info("data deleted")
+    stmt = delete(organisation_dataset)
+    db.session.execute(stmt)
+    db.session.commit()
+    stmt = delete(Dataset)
+    db.session.execute(stmt)
+    db.session.commit()
+    stmt = delete(Organisation)
+    db.session.execute(stmt)
+    db.session.commit()
+    logger.info("all data deleted")
 
 
 @data_cli.command("entities")
@@ -164,11 +169,11 @@ def load_entities():
     datasets = Dataset.query.all()
     request_data = [
         {
-            "provider": provider.organisation,
-            "provider_entity": provider.entity,
+            "organisation": organisation.organisation,
+            "organisation_entity": organisation.entity,
             "datasets": [ds.dataset for ds in datasets],
         }
-        for provider in Provider.query.all()
+        for organisation in Organisation.query.all()
     ]
 
     try:
@@ -186,12 +191,14 @@ def load_entities():
         cursor = conn.cursor()
 
         for item in request_data:
-            logger.info(f"loading data for {item['provider']}")
-            provider_entity = item["provider_entity"]
+            logger.info(f"loading data for {item['organisation']}")
+            organisation_entity = item["organisation_entity"]
             entities = []
             for dataset in item["datasets"]:
                 data = cursor.execute(
-                    entity_sql.format(dataset=dataset, provider_entity=provider_entity)
+                    entity_sql.format(
+                        dataset=dataset, organisation_entity=organisation_entity
+                    )
                 )
                 if data:
                     for row in data:
@@ -202,7 +209,7 @@ def load_entities():
                             s.bulk_save_objects(entities)
                             s.commit()
                             logger.info(
-                                f"saved {len(entities)} {dataset} for {item['provider']}"
+                                f"saved {len(entities)} {dataset} for {item['organisation']}"
                             )
                             entities = []
                 else:

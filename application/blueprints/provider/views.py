@@ -1,14 +1,14 @@
 from flask import Blueprint, abort, render_template
 from sqlalchemy import func
 
-from application.models import Entity, Provider
+from application.models import Entity, Organisation
 
 provider = Blueprint("provider", __name__, template_folder="templates")
 
 
 @provider.route("/provider/<string:organisation>")
 def provider_summary(organisation):
-    org = Provider.query.get(organisation)
+    org = Organisation.query.filter(Organisation.entity == organisation).one()
     if not org:
         return abort(404)
 
