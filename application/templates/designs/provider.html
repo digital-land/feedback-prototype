@@ -1,0 +1,42 @@
+{% extends "layouts/page.html" %}
+{% block pageTitle %}{{ page_data.organisation.name }}{% endblock %}
+
+{% block page_summary_content %}
+  <div class="app-!-self-clear">
+    <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="100" alt="" class="app-!-float-right">
+    <p>This organisation is a member of the open digital planning programme.</p>
+  </div>
+{% endblock page_summary_content %}
+
+{% block content_primary %}
+
+  <h2 class="govuk-heading-l">Datasets provided by {{ page_data.organisation.name }}</h2>
+
+  {{
+    govukTable({
+      'head': [
+        {
+          'text': 'Dataset name'
+        },
+        {
+          'text': 'Total',
+          'format': 'numeric'
+        }
+      ],
+      'rows': [
+        [
+          {
+            'text': 'Conservation areas'
+          },
+          {
+            'text': '58',
+            'format': 'numeric'
+          },
+        ],
+        ]
+    })
+    }}
+
+  <hr class="govuk-section-break govuk-section-break--l">
+
+{% endblock %}

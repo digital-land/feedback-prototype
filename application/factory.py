@@ -35,11 +35,13 @@ def register_blueprints(app):
     Import and register blueprints
     """
 
+    from application.blueprints.designs.views import designs
     from application.blueprints.main.views import main
     from application.blueprints.provider.views import provider
 
     app.register_blueprint(main)
     app.register_blueprint(provider)
+    app.register_blueprint(designs)
 
 
 def register_context_processors(app):
