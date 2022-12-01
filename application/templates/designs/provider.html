@@ -10,33 +10,127 @@
 
 {% block content_primary %}
 
-  <h2 class="govuk-heading-l">Datasets provided by {{ page_data.organisation.name }}</h2>
+  <h2 class="govuk-heading-l">Datasets</h2>
+
+  <p class="govuk-body-l">This page contains a list of planning and housing datasets created using data provided by {{ page_data.organisation.name }}.</p>
+
+  {# {% set detailsText %}
+  <ul class="govuk-list">
+    <p>Organisations such as Local Planning Authorities provide data because they:</p>
+    <li>are required to publish by law</li>
+    <li>are expected to publish by agreement, or</li>
+    <li>choose to publish to an open standard</li>
+  </ul>
+  {% endset %}
+
+  {{
+    govukDetails({
+      'summaryText': 'Why do ' + page_data.organisation.name + ' provide this data?',
+      'text': detailsText | safe
+    })
+  }} #}
+
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="legally-required">Statutory datasets</h3>
+  <p class="govuk-hint">Datasets that {{ page_data.organisation.name }} are legally required to publish</p>
 
   {{
     govukTable({
       'head': [
         {
-          'text': 'Dataset name'
+          'text': 'Name'
         },
         {
-          'text': 'Total',
-          'format': 'numeric'
-        }
+          'text': 'Collection status',
+          'classes': 'govuk-!-text-align-right'
+        },
       ],
       'rows': [
         [
           {
-            'text': 'Conservation areas'
+            'html': '<a href="#">Brownfield land</a>'
           },
           {
-            'text': '58',
-            'format': 'numeric'
+            'html': govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' }),
+            'classes': 'govuk-!-text-align-right'
           },
         ],
-        ]
+      ]
     })
-    }}
+  }}
 
-  <hr class="govuk-section-break govuk-section-break--l">
+  <hr class="govuk-section-break govuk-section-break--m">
+
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="legally-required">Expected datasets</h3>
+  <p class="govuk-hint">Datasets we expect {{ page_data.organisation.name }} to publish because they have agreed to do so when they became member of a project or initiative.</p>
+
+  {{
+    govukTable({
+      'head': [
+        {
+          'text': 'Name'
+        },
+        {
+          'text': 'Collection status',
+          'classes': 'govuk-!-text-align-right'
+        },
+      ],
+      'rows': [
+        [
+          {
+            'html': '<a href="#">Conservation areas</a>'
+          },
+          {
+            'html': govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' }),
+            'classes': 'govuk-!-text-align-right'
+          },
+        ],
+        [
+          {
+            'html': '<a href="#">Listed buildings</a>'
+          },
+          {
+            'html': govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' }),
+            'classes': 'govuk-!-text-align-right'
+          },
+        ],
+        [
+          {
+            'html': '<a href="#">Article 4 directions</a>',
+          },
+          {
+            'html': govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' }),
+            'classes': 'govuk-!-text-align-right'
+          },
+        ],
+        [
+          {
+            'html': '<a href="#">Article 4 Direction outlines</a>',
+          },
+          {
+            'html': govukTag({ 'text': 'Not found', 'classes': 'govuk-tag--red' }),
+            'classes': 'govuk-!-text-align-right'
+          },
+        ],
+      ]
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--m">
+
+  {% set detailsText %}
+  <p>Each dataset is listed by name and has an associated 'collection status'.</p>
+  <p>A collection can either be:</p>
+  <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+    <li>{{ govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' })}} which means planning.data.gov.uk was able to successfully collect data from {{ page_data.organisation.name }}.</li>
+    <li>{{ govukTag({ 'text': 'Not found', 'classes': 'govuk-tag--red' })}} which means planning.data.gov.uk was not able to collect data from {{ page_data.organisation.name }}.</li>
+  </ul>
+  {% endset %}
+
+  {{
+    govukDetails({
+      'summaryText': 'Help understanding this table',
+      'text': detailsText | safe
+    })
+  }}
 
 {% endblock %}

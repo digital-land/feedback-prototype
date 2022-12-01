@@ -11,17 +11,6 @@
       </div>
     </header>
 
-    {% if page_data.summary.show  %}
-      <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
-        {% block page_summary %}
-          {% if page_data.summary.title %}<h2 class="govuk-heading-l">{{ page_data.summary.title | default('page_data.summary.title') }}</h2>{% endif %}
-          {% block page_summary_content %}{% endblock page_summary_content %}
-          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible app-!-self-clear">
-        {% endblock page_summary %}
-      </section>
-      <!-- /#app-page-summary.app-page-summary -->
-    {% endif %}
-
     <section id="app-content" class="govuk-width-container app-content">
       {% block content %}
         <div class="govuk-grid-row">
@@ -34,6 +23,17 @@
         </div>
       {% endblock content %}
     </section>
+
+        {% if page_data.summary.show  %}
+      <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible app-!-self-clear">
+        {% block page_summary %}
+          {% if page_data.summary.title %}<h2 class="govuk-heading-l">{{ page_data.summary.title | default('page_data.summary.title') }}</h2>{% endif %}
+          {% block page_summary_content %}{% endblock page_summary_content %}
+        {% endblock page_summary %}
+      </section>
+      <!-- /#app-page-summary.app-page-summary -->
+    {% endif %}
 
   </main>
 
