@@ -12,29 +12,13 @@ def provider_summary(entity):
     if not organisation:
         return abort(404)
 
-    organisation_datasets = [ds.dataset for ds in organisation.datasets]
-
-    project_dataset_counts = (
-        Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
-        .filter(
-            Entity.organisation_entity == organisation.entity,
-            Entity.dataset.in_(organisation_datasets),
-        )
-        .group_by(Entity.dataset)
-        .all()
-    )
-    datasets_found = [item[0] for item in project_dataset_counts]
-    for ds in organisation_datasets:
-        if ds not in datasets_found:
-            project_dataset_counts.append((ds, 0))
-
-    project_dataset_counts.sort(key=lambda x: x[0])
+    project_dataset_counts = organisation.project_dataset_counts()
 
     other_datasets_counts = (
         Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
         .filter(
             Entity.organisation_entity == organisation.entity,
-            Entity.dataset.not_in(organisation_datasets),
+            Entity.dataset.not_in([ds[0] for ds in project_dataset_counts]),
         )
         .group_by(Entity.dataset)
         .all()

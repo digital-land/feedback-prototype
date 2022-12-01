@@ -26,6 +26,16 @@ class Organisation(db.Model):
         "Dataset", secondary=organisation_dataset, back_populates="organisations"
     )
 
+    def project_dataset_counts(self):
+        data = []
+        for dataset in self.datasets:
+            count = (dataset.dataset, len(self.get_entity_by_dataset(dataset.dataset)))
+            data.append(count)
+        return data
+
+    def get_entity_by_dataset(self, dataset):
+        return [entity for entity in self.entities if entity.dataset == dataset]
+
 
 class Dataset(db.Model):
     dataset = db.Column(db.Text, primary_key=True, nullable=False)
