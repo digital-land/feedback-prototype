@@ -12,16 +12,48 @@ def provider_summary(entity):
     if not organisation:
         return abort(404)
 
-    data = (
+    organisation_datasets = [ds.dataset for ds in organisation.datasets]
+
+    project_dataset_counts = (
         Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
-        .filter(Entity.organisation_entity == organisation.entity)
+        .filter(
+            Entity.organisation_entity == organisation.entity,
+            Entity.dataset.in_(organisation_datasets),
+        )
         .group_by(Entity.dataset)
         .all()
     )
-    rows = []
-    for item in data:
+    datasets_found = [item[0] for item in project_dataset_counts]
+    for ds in organisation_datasets:
+        if ds not in datasets_found:
+            project_dataset_counts.append((ds, 0))
+
+    project_dataset_counts.sort(key=lambda x: x[0])
+
+    other_datasets_counts = (
+        Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
+        .filter(
+            Entity.organisation_entity == organisation.entity,
+            Entity.dataset.not_in(organisation_datasets),
+        )
+        .group_by(Entity.dataset)
+        .all()
+    )
+
+    project_datasets = []
+    for item in project_dataset_counts:
         dataset_name = item[0].replace("-", " ").title()
-        rows.append(
+        project_datasets.append(
+            [
+                {"text": dataset_name},
+                {"text": item[1], "format": "numeric"},
+            ]
+        )
+
+    other_datasets = []
+    for item in other_datasets_counts:
+        dataset_name = item[0].replace("-", " ").title()
+        other_datasets.append(
             [
                 {"text": dataset_name},
                 {"text": item[1], "format": "numeric"},
@@ -31,7 +63,8 @@ def provider_summary(entity):
     return render_template(
         "provider.html",
         organisation=organisation,
-        rows=rows,
+        project_datasets=project_datasets,
+        other_datasets=other_datasets,
         page_data={"title": organisation.name, "summary": {"show": True}},
     )
 
