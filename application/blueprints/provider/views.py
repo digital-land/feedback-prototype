@@ -12,16 +12,32 @@ def provider_summary(entity):
     if not organisation:
         return abort(404)
 
-    data = (
+    project_dataset_counts = organisation.project_dataset_counts()
+
+    other_datasets_counts = (
         Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
-        .filter(Entity.organisation_entity == organisation.entity)
+        .filter(
+            Entity.organisation_entity == organisation.entity,
+            Entity.dataset.not_in([ds[0] for ds in project_dataset_counts]),
+        )
         .group_by(Entity.dataset)
         .all()
     )
-    rows = []
-    for item in data:
+
+    project_datasets = []
+    for item in project_dataset_counts:
         dataset_name = item[0].replace("-", " ").title()
-        rows.append(
+        project_datasets.append(
+            [
+                {"text": dataset_name},
+                {"text": item[1], "format": "numeric"},
+            ]
+        )
+
+    other_datasets = []
+    for item in other_datasets_counts:
+        dataset_name = item[0].replace("-", " ").title()
+        other_datasets.append(
             [
                 {"text": dataset_name},
                 {"text": item[1], "format": "numeric"},
@@ -31,7 +47,8 @@ def provider_summary(entity):
     return render_template(
         "provider.html",
         organisation=organisation,
-        rows=rows,
+        project_datasets=project_datasets,
+        other_datasets=other_datasets,
         page_data={"title": organisation.name, "summary": {"show": True}},
     )
 
