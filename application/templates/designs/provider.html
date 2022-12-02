@@ -14,10 +14,10 @@
 
   <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.organisation.name }}.</p>
 
-  {# {% set detailsText %}
+  {% set detailsText %}
   <ul class="govuk-list">
     <p>Organisations such as Local Planning Authorities provide data because they:</p>
-    <li>are required to publish by law</li>
+    <li>are required to publish by statutory law</li>
     <li>are expected to publish by agreement, or</li>
     <li>choose to publish to an open standard</li>
   </ul>
@@ -28,9 +28,9 @@
       'summaryText': 'Why do ' + page_data.organisation.name + ' provide this data?',
       'text': detailsText | safe
     })
-  }} #}
+  }}
 
-  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="legally-required">Statutory datasets</h3>
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="statutory-datasets">Statutory datasets</h3>
   <p class="govuk-hint">Datasets that {{ page_data.organisation.name }} are legally required to publish</p>
 
   {{
@@ -40,7 +40,7 @@
           'text': 'Name'
         },
         {
-          'text': 'Collection status',
+          'text': 'Status',
           'classes': 'govuk-!-text-align-right'
         },
       ],
@@ -60,7 +60,7 @@
 
   <hr class="govuk-section-break govuk-section-break--m">
 
-  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="legally-required">Expected datasets</h3>
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-datasets">Expected datasets</h3>
   <p class="govuk-hint">Datasets we expect {{ page_data.organisation.name }} to publish because they have agreed to do so when they became member of a project or initiative.</p>
 
   {{
@@ -70,7 +70,7 @@
           'text': 'Name'
         },
         {
-          'text': 'Collection status',
+          'text': 'Status',
           'classes': 'govuk-!-text-align-right'
         },
       ],
@@ -107,7 +107,7 @@
             'html': '<a href="#">Article 4 Direction areas</a>',
           },
           {
-            'html': govukTag({ 'text': 'Not found', 'classes': 'govuk-tag--red' }),
+            'html': govukTag({ 'text': page_data.status[2], 'classes': 'govuk-tag--red' }),
             'classes': 'govuk-!-text-align-right'
           },
         ],
@@ -117,8 +117,8 @@
 
   <hr class="govuk-section-break govuk-section-break--m">
 
-  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="legally-required">Prospective datasets</h3>
-  <p class="govuk-hint">Prospective datasets {{ page_data.organisation.name }} to publish because they have agreed to do so when they became member of a project or initiative.</p>
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="prospective-datasets">Prospective datasets</h3>
+  <p class="govuk-hint">A prospective dataset is one we encourage {{ page_data.organisation.name }} to publish but they are not yet required to by law or agreement.</p>
 
   {{
     govukTable({
@@ -127,14 +127,14 @@
           'text': 'Name'
         },
         {
-          'text': 'Collection status',
+          'text': 'Status',
           'classes': 'govuk-!-text-align-right'
         },
       ],
       'rows': [
         [
           {
-            'html': '<a href="#">Conservation areas</a>'
+            'html': '<a href="#">Dataset name</a>'
           },
           {
             'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
@@ -143,7 +143,7 @@
         ],
         [
           {
-            'html': '<a href="#">Listed buildings</a>'
+            'html': '<a href="#">Dataset name</a>'
           },
           {
             'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
@@ -152,19 +152,19 @@
         ],
         [
           {
-            'html': '<a href="#">Article 4 directions</a>',
+            'html': '<a href="#">Dataset name</a>'
           },
           {
-            'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
+            'html': govukTag({ 'text': page_data.status[2], 'classes': 'govuk-tag--grey' }),
             'classes': 'govuk-!-text-align-right'
           },
         ],
         [
           {
-            'html': '<a href="#">Article 4 Direction outlines</a>',
+            'html': '<a href="#">Dataset name</a>'
           },
           {
-            'html': govukTag({ 'text': 'Not found', 'classes': 'govuk-tag--red' }),
+            'html': govukTag({ 'text': page_data.status[2], 'classes': 'govuk-tag--grey' }),
             'classes': 'govuk-!-text-align-right'
           },
         ],
@@ -175,7 +175,7 @@
   <hr class="govuk-section-break govuk-section-break--m">
 
   {% set detailsText %}
-  <p>Each dataset is listed by name and has an associated 'collection status'.</p>
+  <p>Each dataset is listed by name and has an associated 'Status'.</p>
   <p>A collection can either be:</p>
   <ul class="govuk-list govuk-list--spaced">
     <li>{{ govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' })}} means planning.data.gov.uk was able to successfully collect data from {{ page_data.organisation.name }}.</li>
@@ -190,4 +190,29 @@
     })
   }}
 
-{% endblock %}
+{% endblock content_primary %}
+
+{% block content_secondary %}
+{# <h3 class="govuk-heading-s app-heading-section app-heading-section--top" id="Summary">Summary</h3>
+
+{{ govukSummaryList({
+  'rows': [
+    {
+      'key': {
+        'text': "Possible datasets"
+      },
+      'value': {
+        'text': "15"
+      },
+    },
+    {
+      'key': {
+        'text': "Total provided"
+      },
+      'value': {
+        'text': "9"
+      },
+    }
+  ]
+}) }} #}
+{% endblock content_secondary %}

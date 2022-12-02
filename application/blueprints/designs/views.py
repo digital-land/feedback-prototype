@@ -16,11 +16,19 @@ def provider():
     return render_template(
         template_path("provider.html"),
         page_data={
-            "organisation": {"name": get_param_val("organisation")},
-            "title": get_param_val("title"),
-            "caption": get_param_val("caption"),
+            "organisation": {
+                "name": get_param_val("organisation")
+                if get_param_val("organisation")
+                else "Borchester Borough Council"
+            },
+            "title": get_param_val("title")
+            if get_param_val("title")
+            else "Borchester Borough Council",
+            "caption": get_param_val("caption")
+            if get_param_val("caption")
+            else "Data Provider",
             "summary": {"show": True},
             "query_string": request.args.to_dict(),
-            "status": ["Found"],
+            "status": ["Provided", "Unavailable", "Not found", "Problem collecting"],
         },
     )
