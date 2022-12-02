@@ -21,5 +21,6 @@ def provider():
             "caption": get_param_val("caption"),
             "summary": {"show": True},
             "query_string": request.args.to_dict(),
+            "status": ["Found"],
         },
     )
