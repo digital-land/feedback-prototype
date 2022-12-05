@@ -14,9 +14,9 @@
 
   <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.organisation.name }}.</p>
 
-  {% set detailsText %}
+  {# {% set detailsText %}
+  <p>Organisations such as Local Planning Authorities provide data because they:</p>
   <ul class="govuk-list">
-    <p>Organisations such as Local Planning Authorities provide data because they:</p>
     <li>are required to publish by statutory law</li>
     <li>are expected to publish by agreement, or</li>
     <li>choose to publish to an open standard</li>
@@ -28,7 +28,7 @@
       'summaryText': 'Why do ' + page_data.organisation.name + ' provide this data?',
       'text': detailsText | safe
     })
-  }}
+  }} #}
 
   <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="statutory-datasets">Statutory datasets</h3>
   <p class="govuk-hint">Datasets that {{ page_data.organisation.name }} are legally required to publish</p>
@@ -117,8 +117,8 @@
 
   <hr class="govuk-section-break govuk-section-break--m">
 
-  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="prospective-datasets">Prospective datasets</h3>
-  <p class="govuk-hint">A prospective dataset is one we encourage {{ page_data.organisation.name }} to publish but they are not yet required to by law or agreement.</p>
+  <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="encouraged-datasets">Encouraged datasets</h3>
+  <p class="govuk-hint">Encouraged datasets are what we ask organisations such as {{ page_data.organisation.name }} to publish but they are not yet required to so by law or agreement.</p>
 
   {{
     govukTable({
