@@ -59,3 +59,17 @@ class Entity(db.Model):
     reference = db.Column(db.Text)
     organisation_entity = db.Column(db.BigInteger, db.ForeignKey("organisation.entity"))
     organisation = db.relationship("Organisation", back_populates="entities")
+
+
+source = db.Table(
+    "source",
+    db.Column("source", db.Text),
+    db.Column("endpoint", db.Text),
+    db.Column("collection", db.Text),
+    db.Column("dataset", db.Text),
+    db.Column("documentation_url", db.Text),
+    db.Column("endpoint_url", db.Text),
+    db.Column("resource", db.Text),
+    db.Column("organisation", db.Text),
+    db.Column("organisation_entity", db.Text),
+)

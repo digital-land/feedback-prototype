@@ -10,7 +10,13 @@ from sqlalchemy import delete
 from sqlalchemy.dialects.postgresql import insert
 
 from application.extensions import db
-from application.models import Dataset, Entity, Organisation, organisation_dataset
+from application.models import (
+    Dataset,
+    Entity,
+    Organisation,
+    organisation_dataset,
+    source,
+)
 
 data_cli = AppGroup("data")
 
@@ -86,74 +92,118 @@ SELECT
 FROM project;"""
 
 
+source_sql = """
+SELECT
+    s.source,
+    s.endpoint,
+    s.collection,
+    sp.pipeline as dataset,
+    s.documentation_url,
+    e.endpoint_url,
+    r.resource,
+    o.organisation,
+    o.entity as organisation_entity
+FROM source s, source_pipeline sp, endpoint e, organisation o, resource_endpoint re, resource r
+WHERE s.source = sp.source
+  AND s.endpoint = e.endpoint
+  AND e.endpoint = re.endpoint
+  AND r.resource = re.resource
+  AND s.organisation = o.organisation
+  AND (s.end_date is null or s.end_date == '');"""
+
+
 @data_cli.command("load")
 def load_data():
 
     from flask import current_app
 
-    logger.info("loading providers")
-
     datasette_url = current_app.config["DATASETTE_URL"]
-    url = (
-        f"{datasette_url}/digital-land.json?sql={organisation_sql.strip()}&_shape=array"
-    )
-    resp = requests.get(url)
-    resp.raise_for_status()
-    data = resp.json()
-    inserts = []
-    # remove -eng from local-authority ids until digital  land db catches up
-    for org in data:
-        inserts.append(
-            {
-                "organisation": org["organisation"].replace("-eng", ""),
-                "name": org["name"],
-                "entity": org["entity"],
-            }
-        )
 
-    stmt = insert(Organisation).values(inserts)
-    db.session.execute(stmt)
-    db.session.commit()
-    logger.info("finished loading providers")
+    try:
+        logger.info("loading organisations")
+        out = tempfile.NamedTemporaryFile(mode="w+b", suffix=".db", delete=False)
+        sqlite_file_name = out.name
+        sqlite_ = requests.get(f"{datasette_url}/digital-land.db", stream=True)
+        for chunk in sqlite_.iter_content(chunk_size=1024):
+            if chunk:
+                out.write(chunk)
+        out.flush()
+        out.close()
 
-    logger.info("loading datasets")
+        conn = sqlite3.connect(sqlite_file_name)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
 
-    url = f"{datasette_url}/digital-land.json?sql={dataset_sql.strip()}&_shape=array"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    data = resp.json()
-    stmt = insert(Dataset).values(data)
-    db.session.execute(stmt)
-    db.session.commit()
-    logger.info("finished loading datasets")
+        inserts = []
+        organisations = cursor.execute(organisation_sql.strip())
+        for org in organisations:
+            inserts.append(
+                {
+                    "organisation": org["organisation"].replace("-eng", ""),
+                    "name": org["name"],
+                    "entity": org["entity"],
+                }
+            )
 
-    logger.info("loading organisation_datasets")
-    url = f"{datasette_url}/digital-land.json?sql={organisation_dataset_sql.strip()}&_shape=array"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    data = resp.json()
-    stmt = insert(organisation_dataset).values(data)
-    db.session.execute(stmt)
-    db.session.commit()
-    logger.info("finished loading organisation_datasets")
+        stmt = insert(Organisation).values(inserts)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished loading organisations")
+
+        logger.info("loading datasets")
+        datasets = [dict(row) for row in cursor.execute(dataset_sql.strip()).fetchall()]
+        stmt = insert(Dataset).values(datasets)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished loading datasets")
+
+        logger.info("loading organisation_datasets")
+        organisation_datasets = [
+            dict(row)
+            for row in cursor.execute(organisation_dataset_sql.strip()).fetchall()
+        ]
+        stmt = insert(organisation_dataset).values(organisation_datasets)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished loading organisation_datasets")
+
+        logger.info("loading sources")
+        data = [dict(row) for row in cursor.execute(source_sql.strip()).fetchall()]
+        stmt = insert(source).values(data)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished loading sources")
+
+    except Exception as e:
+        logger.exception(e)
+
+    finally:
+        os.unlink(sqlite_file_name)
 
 
 @data_cli.command("drop")
 def drop_data():
-    from application.models import Entity
+
+    stmt = delete(source)
+    db.session.execute(stmt)
+    db.session.commit()
 
     stmt = delete(Entity)
     db.session.execute(stmt)
     db.session.commit()
+
     stmt = delete(organisation_dataset)
     db.session.execute(stmt)
     db.session.commit()
+
     stmt = delete(Dataset)
     db.session.execute(stmt)
     db.session.commit()
+
     stmt = delete(Organisation)
     db.session.execute(stmt)
     db.session.commit()
+
     logger.info("all data deleted")
 
 
@@ -177,7 +227,7 @@ def load_entities():
     ]
 
     try:
-        out = tempfile.NamedTemporaryFile(mode="w+b", suffix=".db", delete=False)
+        out = tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False)
         sqlite_file_name = out.name
         sqlite_ = requests.get(f"{datasette_url}/entity.db", stream=True)
         for chunk in sqlite_.iter_content(chunk_size=1024):
