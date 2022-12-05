@@ -7,7 +7,8 @@
     <header class="app-page-header govuk-!-margin-bottom-6">
       <div class="app-page-header__content">
         {% if page_data.caption %}<span class="govuk-caption-l">{{ page_data.caption }}</span>{% endif %}
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ page_data.title | default('title here') | title  }}</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">{{ page_data.title | default('title here') | title  }}</h1>
+        {% if page_data.lede %}<span class="govuk-body-l">{{ page_data.lede }}</span>{% endif %}
       </div>
     </header>
 
@@ -24,16 +25,15 @@
       {% endblock content %}
     </section>
 
-        {% if page_data.summary.show  %}
-      <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
-          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible app-!-self-clear">
-        {% block page_summary %}
-          {% if page_data.summary.title %}<h2 class="govuk-heading-l">{{ page_data.summary.title | default('page_data.summary.title') }}</h2>{% endif %}
-          {% block page_summary_content %}{% endblock page_summary_content %}
-        {% endblock page_summary %}
-      </section>
-      <!-- /#app-page-summary.app-page-summary -->
+    {% if self.page_summary()  %}
+    <section id="app-page-summary" class="app-page-summary govuk-!-margin-bottom-6 govuk-width-container app-!-self-clear">
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible app-!-self-clear">
+      {% block page_summary %}{% endblock page_summary %}
+    </section>
+    <!-- /#app-page-summary.app-page-summary -->
     {% endif %}
+
+    <hr class="govuk-section-break govuk-section-break--m">
 
   </main>
 

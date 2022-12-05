@@ -1,0 +1,75 @@
+{% extends "layouts/page.html" %}
+{% block pageTitle %}{{ page_data.dataset.name }}{% endblock %}
+
+{% block content_primary %}
+
+  {{
+    govukSummaryList({
+      'rows': [
+        {
+          'key': {
+            'text': "Status",
+            'classes': 'govuk-!-width-one-half'
+          },
+          'value': {
+            'html': govukTag({ 'text': 'Found', 'classes': 'govuk-tag--green' })
+          }
+        },
+        {
+          'key': {
+            'text': "Last checked for new data"
+          },
+          'value': {
+            'text': "30th November 2022"
+          }
+        },
+        {
+          'key': {
+            'text': "Last time new data was found"
+          },
+          'value': {
+            'text': "10th September 2021"
+          }
+        },
+      ]
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--s">
+
+  <h3 class="govuk-heading-m">Description</h3>
+  <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe, ad consequatur qui eaque odit nihil doloribus magni dolores esse pariatur soluta, aliquid assumenda! Culpa illo omnis quis consequatur rem vitae.</p>
+
+  <h3 class="govuk-heading-s">Why is this data published?</h3>
+  <p>{{ page_data.dataset.name }} data is not required to be published by legislation but {{ page_data.organisation.name }} is expected to be publish it by agreement with the Department for Levelling Up, Housing and Communities.</p>
+
+  <hr class="govuk-section-break govuk-section-break--m">
+  <h3 class="govuk-heading-m">Preview</h3>
+
+
+{% endblock content_primary %}
+
+{% block content_secondary %}
+{# <h3 class="govuk-heading-s app-heading-section app-heading-section--top" id="Summary">Summary</h3>
+
+{{ govukSummaryList({
+  'rows': [
+    {
+      'key': {
+        'text': "Possible datasets"
+      },
+      'value': {
+        'text': "15"
+      },
+    },
+    {
+      'key': {
+        'text': "Total provided"
+      },
+      'value': {
+        'text': "9"
+      },
+    }
+  ]
+}) }} #}
+{% endblock content_secondary %}

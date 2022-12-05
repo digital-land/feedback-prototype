@@ -14,22 +14,6 @@
 
   <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.organisation.name }}.</p>
 
-  {# {% set detailsText %}
-  <p>Organisations such as Local Planning Authorities provide data because they:</p>
-  <ul class="govuk-list">
-    <li>are required to publish by statutory law</li>
-    <li>are expected to publish by agreement, or</li>
-    <li>choose to publish to an open standard</li>
-  </ul>
-  {% endset %}
-
-  {{
-    govukDetails({
-      'summaryText': 'Why do ' + page_data.organisation.name + ' provide this data?',
-      'text': detailsText | safe
-    })
-  }} #}
-
   <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="statutory-datasets">Statutory datasets</h3>
   <p class="govuk-hint">Datasets that {{ page_data.organisation.name }} are legally required to publish</p>
 
@@ -61,7 +45,7 @@
   <hr class="govuk-section-break govuk-section-break--m">
 
   <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-datasets">Expected datasets</h3>
-  <p class="govuk-hint">Datasets we expect {{ page_data.organisation.name }} to publish because they have agreed to do so when they became member of a project or initiative.</p>
+  <p class="govuk-hint">Datasets we expect {{ page_data.organisation.name }} to publish because they have agreed to do so with the Department for Levelling Up, Housing and Communities.</p>
 
   {{
     govukTable({
@@ -77,7 +61,7 @@
       'rows': [
         [
           {
-            'html': '<a href="#">Conservation areas</a>'
+            'html': '<a href="Conservation areas">Conservation areas</a>'
           },
           {
             'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
@@ -86,7 +70,7 @@
         ],
         [
           {
-            'html': '<a href="#">Listed buildings</a>'
+            'html': '<a href="listed buildings">Listed buildings</a>'
           },
           {
             'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
@@ -95,7 +79,7 @@
         ],
         [
           {
-            'html': '<a href="#">Article 4 directions</a>',
+            'html': '<a href="article 4 directions">Article 4 directions</a>',
           },
           {
             'html': govukTag({ 'text': page_data.status[0], 'classes': 'govuk-tag--green' }),
@@ -104,7 +88,7 @@
         ],
         [
           {
-            'html': '<a href="#">Article 4 Direction areas</a>',
+            'html': '<a href="article 4 direction areas">Article 4 Direction areas</a>',
           },
           {
             'html': govukTag({ 'text': page_data.status[2], 'classes': 'govuk-tag--red' }),
