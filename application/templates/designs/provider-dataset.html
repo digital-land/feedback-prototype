@@ -37,39 +37,41 @@
 
   <hr class="govuk-section-break govuk-section-break--s">
 
+  <h3 class="govuk-heading-m">Endpoints</h3>
+
+  {{
+    appEndpointCard({
+      'title': 'Endpoint 1',
+      'endpoint': {
+        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
+      },
+      'documentation': {
+        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json'
+      }
+    })
+  }}
+
+  {{
+    appEndpointCard({
+      'title': 'Endpoint 2',
+      'endpoint': {
+        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
+      },
+      'documentation': {
+        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json'
+      }
+    })
+  }}
+
   <h3 class="govuk-heading-m">Description</h3>
   <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe, ad consequatur qui eaque odit nihil doloribus magni dolores esse pariatur soluta, aliquid assumenda! Culpa illo omnis quis consequatur rem vitae.</p>
-
-  <h3 class="govuk-heading-s">Why is this data published?</h3>
-  <p>{{ page_data.dataset.name }} data is not required to be published by legislation but {{ page_data.organisation.name }} is expected to be publish it by agreement with the Department for Levelling Up, Housing and Communities.</p>
+  <p>Learn more about the <a href="#">conservation area dataset</a>.</p>
 
   <hr class="govuk-section-break govuk-section-break--m">
-  <h3 class="govuk-heading-m">Preview</h3>
 
+  <h3 class="govuk-heading-m">Why is this data published?</h3>
+  <p>{{ page_data.dataset.name }} data is not required to be published by legislation but {{ page_data.organisation.name }} is expected to publish it by agreement with the Department for Levelling Up, Housing and Communities.</p>
 
 {% endblock content_primary %}
 
-{% block content_secondary %}
-{# <h3 class="govuk-heading-s app-heading-section app-heading-section--top" id="Summary">Summary</h3>
-
-{{ govukSummaryList({
-  'rows': [
-    {
-      'key': {
-        'text': "Possible datasets"
-      },
-      'value': {
-        'text': "15"
-      },
-    },
-    {
-      'key': {
-        'text': "Total provided"
-      },
-      'value': {
-        'text': "9"
-      },
-    }
-  ]
-}) }} #}
-{% endblock content_secondary %}
+{% block content_secondary %}{% endblock content_secondary %}
