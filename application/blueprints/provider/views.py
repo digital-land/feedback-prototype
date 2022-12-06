@@ -75,5 +75,9 @@ def provider_data(organisation, dataset):
     sources = [s._asdict() for s in sources]
 
     return render_template(
-        "sources.html", organisation=org, dataset=dataset, sources=sources, page_data={}
+        "sources.html",
+        organisation=org,
+        dataset=dataset,
+        sources=sources,
+        page_data={"title": f"{dataset.replace('-', ' ').capitalize()} sources"},
     )
