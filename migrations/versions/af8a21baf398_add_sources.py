@@ -1,15 +1,15 @@
 """add sources
 
-Revision ID: 0176bc377198
+Revision ID: af8a21baf398
 Revises: 470a2e54120c
-Create Date: 2022-12-05 13:18:59.532145
+Create Date: 2022-12-05 15:51:22.274666
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = "0176bc377198"
+revision = "af8a21baf398"
 down_revision = "470a2e54120c"
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
         sa.Column("endpoint_url", sa.Text(), nullable=True),
         sa.Column("resource", sa.Text(), nullable=True),
         sa.Column("organisation", sa.Text(), nullable=True),
-        sa.Column("organisation_entity", sa.Text(), nullable=True),
+        sa.Column("organisation_entity", sa.BigInteger(), nullable=True),
     )
     # ### end Alembic commands ###
 

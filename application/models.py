@@ -64,6 +64,7 @@ class Entity(db.Model):
 source = db.Table(
     "source",
     db.Column("source", db.Text),
+    db.Column("entry_date", db.Date),
     db.Column("endpoint", db.Text),
     db.Column("collection", db.Text),
     db.Column("dataset", db.Text),
@@ -71,5 +72,5 @@ source = db.Table(
     db.Column("endpoint_url", db.Text),
     db.Column("resource", db.Text),
     db.Column("organisation", db.Text),
-    db.Column("organisation_entity", db.Text),
+    db.Column("organisation_entity", db.BigInteger),
 )

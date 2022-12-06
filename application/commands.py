@@ -3,6 +3,7 @@ import logging
 import os
 import sqlite3
 import tempfile
+from datetime import datetime
 
 import requests
 from flask.cli import AppGroup
@@ -100,6 +101,7 @@ SELECT
     sp.pipeline as dataset,
     s.documentation_url,
     e.endpoint_url,
+    e.entry_date,
     r.resource,
     o.organisation,
     o.entity as organisation_entity
@@ -169,6 +171,14 @@ def load_data():
 
         logger.info("loading sources")
         data = [dict(row) for row in cursor.execute(source_sql.strip()).fetchall()]
+        for row in data:
+            row["organisation"] = (row["organisation"].replace("-eng", ""),)
+            if row.get("entry_date") != "":
+                row["entry_date"] = datetime.strptime(
+                    row.get("entry_date"), "%Y-%m-%dT%H:%M:%SZ"
+                )
+            else:
+                row["entry_date"] = None
         stmt = insert(source).values(data)
         db.session.execute(stmt)
         db.session.commit()
@@ -227,7 +237,7 @@ def load_entities():
     ]
 
     try:
-        out = tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False)
+        out = tempfile.NamedTemporaryFile(mode="w+b", suffix=".db", delete=False)
         sqlite_file_name = out.name
         sqlite_ = requests.get(f"{datasette_url}/entity.db", stream=True)
         for chunk in sqlite_.iter_content(chunk_size=1024):
