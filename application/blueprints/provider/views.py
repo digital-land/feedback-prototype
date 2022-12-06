@@ -69,6 +69,7 @@ def provider_data(organisation, dataset):
                 source.c.organisation == org.organisation,
                 source.c.dataset == dataset,
             )
+            .order_by(source.c.entry_date.desc())
             .all()
         )
 
