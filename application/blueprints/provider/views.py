@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, render_template, url_for
 from sqlalchemy import func
 
-from application.models import Entity, Organisation
+from application.models import Entity, Organisation, SourceEndpointDataset
 
 provider = Blueprint("provider", __name__, template_folder="templates")
 
@@ -29,7 +29,7 @@ def provider_summary(organisation):
         dataset = item[0]
         dataset_name = dataset.replace("-", " ").title()
         url = url_for(
-            "provider.provider_data", organisation=organisation, dataset=dataset
+            "provider.provider_dataset", organisation=organisation, dataset=dataset
         )
         if item[1] > 0:
             html = f"<a href='{url}'>{dataset_name}</a>"
@@ -66,8 +66,8 @@ def provider_summary(organisation):
     )
 
 
-@provider.route("/provider/<string:organisation>/dataset/<string:dataset>")
-def provider_data(organisation, dataset):
+@provider.route("/provider/<string:organisation>/<string:dataset>")
+def provider_sources(organisation, dataset):
     organisation = Organisation.query.get(organisation)
     sources = [s for s in organisation.source_endpoint_datasets if s.dataset == dataset]
 
@@ -78,3 +78,17 @@ def provider_data(organisation, dataset):
         sources=sources,
         page_data={"title": f"{dataset.replace('-', ' ').capitalize()} sources"},
     )
+
+
+@provider.route(
+    "/provider/<string:organisation>/<string:dataset>/source/<string:source>/endpoint/<string:endpoint_id>"
+)
+def provider_data(organisation, dataset, source, endpoint_id):
+    # param for endpoint named endpoint_id to avoid clash with builtin param name in Flask.url_for
+    source = SourceEndpointDataset.query.filter(
+        SourceEndpointDataset.organisation_id == organisation,
+        SourceEndpointDataset.dataset == dataset,
+        SourceEndpointDataset.source == source,
+        SourceEndpointDataset.endpoint == endpoint_id,
+    ).one()
+    return "OK placeholder"
