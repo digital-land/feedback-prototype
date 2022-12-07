@@ -15,8 +15,8 @@ from application.models import (
     Dataset,
     Entity,
     Organisation,
+    SourceEndpointDataset,
     organisation_dataset,
-    source,
 )
 
 data_cli = AppGroup("data")
@@ -32,10 +32,6 @@ FROM organisation WHERE
     organisation LIKE 'local-authority%'
     or organisation LIKE 'development-corporation%'
     or organisation LIKE 'national-park-authority%'
-  )
-  AND (
-    "entry_date" IS NULL
-    OR "entry_date" = ""
   );
 """
 
@@ -60,10 +56,12 @@ FROM
     organisation_dataset od,
     project p,
     project_status ps,
-    provision_reason pr
+    provision_reason pr,
+    dataset d
 WHERE od.project = p.project
 AND p.project_status = ps.project_status
 AND od.provision_reason = pr.provision_reason
+AND od.dataset = d.dataset;
 """
 
 entity_sql = """
@@ -97,21 +95,24 @@ source_sql = """
 SELECT
     s.source,
     s.endpoint,
-    s.collection,
-    sp.pipeline as dataset,
-    s.documentation_url,
     e.endpoint_url,
+    s.documentation_url,
     e.entry_date,
-    r.resource,
-    o.organisation,
-    o.entity as organisation_entity
-FROM source s, source_pipeline sp, endpoint e, organisation o, resource_endpoint re, resource r
+    sp.pipeline as dataset,
+    o.organisation as organisation_id
+FROM source s, source_pipeline sp, endpoint e, organisation o
 WHERE s.source = sp.source
   AND s.endpoint = e.endpoint
-  AND e.endpoint = re.endpoint
-  AND r.resource = re.resource
   AND s.organisation = o.organisation
-  AND (s.end_date is null or s.end_date == '');"""
+  AND (s.end_date is null or s.end_date == '')
+  AND (
+    s.organisation LIKE 'local-authority%'
+    OR s.organisation LIKE 'development-corporation%'
+    OR s.organisation LIKE 'national-park-authority%'
+  )
+  AND (s.source is not null OR s.source != '')
+  AND (s.endpoint is not null OR s.endpoint != '')
+  AND (sp.pipeline is not null OR sp.pipeline != '');"""
 
 
 @data_cli.command("load")
@@ -153,33 +154,33 @@ def load_data():
         logger.info("finished loading organisations")
 
         logger.info("loading datasets")
-        datasets = [dict(row) for row in cursor.execute(dataset_sql.strip()).fetchall()]
+        rows = cursor.execute(dataset_sql.strip())
+        datasets = [dict(row) for row in rows]
         stmt = insert(Dataset).values(datasets)
         db.session.execute(stmt)
         db.session.commit()
         logger.info("finished loading datasets")
 
         logger.info("loading organisation_datasets")
-        organisation_datasets = [
-            dict(row)
-            for row in cursor.execute(organisation_dataset_sql.strip()).fetchall()
-        ]
+        rows = cursor.execute(organisation_dataset_sql.strip())
+        organisation_datasets = [dict(row) for row in rows]
         stmt = insert(organisation_dataset).values(organisation_datasets)
         db.session.execute(stmt)
         db.session.commit()
         logger.info("finished loading organisation_datasets")
 
         logger.info("loading sources")
-        data = [dict(row) for row in cursor.execute(source_sql.strip()).fetchall()]
+        rows = cursor.execute(source_sql.strip())
+        data = [dict(row) for row in rows]
         for row in data:
-            row["organisation"] = (row["organisation"].replace("-eng", ""),)
+            row["organisation_id"] = (row["organisation_id"].replace("-eng", ""),)
             if row.get("entry_date") != "":
                 row["entry_date"] = datetime.strptime(
                     row.get("entry_date"), "%Y-%m-%dT%H:%M:%SZ"
                 )
             else:
                 row["entry_date"] = None
-        stmt = insert(source).values(data)
+        stmt = insert(SourceEndpointDataset).values(data)
         db.session.execute(stmt)
         db.session.commit()
         logger.info("finished loading sources")
@@ -194,7 +195,7 @@ def load_data():
 @data_cli.command("drop")
 def drop_data():
 
-    stmt = delete(source)
+    stmt = delete(SourceEndpointDataset)
     db.session.execute(stmt)
     db.session.commit()
 

@@ -25,6 +25,9 @@ class Organisation(db.Model):
     datasets = db.relationship(
         "Dataset", secondary=organisation_dataset, back_populates="organisations"
     )
+    source_endpoint_datasets = db.relationship(
+        "SourceEndpointDataset", back_populates="organisation"
+    )
 
     def project_dataset_counts(self):
         data = []
@@ -61,16 +64,39 @@ class Entity(db.Model):
     organisation = db.relationship("Organisation", back_populates="entities")
 
 
-source = db.Table(
-    "source",
-    db.Column("source", db.Text),
-    db.Column("entry_date", db.Date),
-    db.Column("endpoint", db.Text),
-    db.Column("collection", db.Text),
-    db.Column("dataset", db.Text),
-    db.Column("documentation_url", db.Text),
-    db.Column("endpoint_url", db.Text),
-    db.Column("resource", db.Text),
-    db.Column("organisation", db.Text),
-    db.Column("organisation_entity", db.BigInteger),
-)
+# TODO - move resource to linked table, primary key is source and endpoint
+class SourceEndpointDataset(db.Model):
+    source = db.Column(db.Text, primary_key=True, nullable=False)
+    endpoint = db.Column(db.Text, primary_key=True, nullable=False)
+    dataset = db.Column(db.Text, primary_key=True, nullable=False)
+    endpoint_url = db.Column(db.Text, nullable=False)
+    documentation_url = db.Column(db.Text, nullable=True)
+    entry_date = db.Column(db.Date)
+    organisation_id = db.Column(
+        db.Text, db.ForeignKey("organisation.organisation"), nullable=False
+    )
+    organisation = db.relationship(
+        "Organisation", back_populates="source_endpoint_datasets"
+    )
+    resources = db.relationship("Resources", back_populates="source_endpoint")
+
+
+class Resources(db.Model):
+    resource = db.Column(db.Text, primary_key=True, nullable=False)
+    source_id = db.Column(db.Text, nullable=False)
+    endpoint_id = db.Column(db.Text, nullable=False)
+    dataset_id = db.Column(db.Text, nullable=False)
+    source_endpoint = db.relationship(
+        "SourceEndpointDataset", back_populates="resources"
+    )
+
+    __table_args__ = (
+        db.ForeignKeyConstraint(
+            [source_id, endpoint_id, dataset_id],
+            [
+                SourceEndpointDataset.source,
+                SourceEndpointDataset.endpoint,
+                SourceEndpointDataset.dataset,
+            ],
+        ),
+    )
