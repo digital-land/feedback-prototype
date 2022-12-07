@@ -5,14 +5,14 @@
       {% if params.endpoint %}
         <div class="app-card__row">
           <p class="app-card__label">{{ params.endpoint.text | d('URL') }}</p>
-          <p class="govuk-hint">{{ params.endpoint.hint | d('The web address this data was collected from') }}</p>
+          {# <p class="govuk-hint">{{ params.endpoint.hint | d('The web address this data was collected from') }}</p> #}
           <code class="app-card__code">{{ params.endpoint.url | d('https://www.borchestercouncil.gov.uk/data/feed/example.json') }}</code>
         </div>
       {% endif %}
       {% if params.documentation %}
       <div class="app-card__row">
         <p class="app-card__label">{{ params.documentation.text | d('Documentation page') }}</p>
-        <p class="govuk-hint">{{ params.documentation.hint | d('The web page that describes this data') }}</p>
+        {# <p class="govuk-hint">{{ params.documentation.hint | d('The web page that describes this data') }}</p> #}
         <p class="app-card__link">
           <a href="{{ params.documentation.url | d('#' )}}" class="govuk-link">{{ params.documentation.url | d('#') }}</a>
         </p>
