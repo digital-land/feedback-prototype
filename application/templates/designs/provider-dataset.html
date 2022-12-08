@@ -1,77 +1,76 @@
 {% extends "layouts/page.html" %}
 {% block pageTitle %}{{ page_data.dataset.name }}{% endblock %}
 
-{% block content_primary %}
+{% block content %}
 
-  {{
-    govukSummaryList({
-      'rows': [
-        {
-          'key': {
-            'text': "Status",
-            'classes': 'govuk-!-width-one-half'
+  <h2 class="govuk-heading-l govuk-visually-hidden">Summary</h2>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-l govuk-visually-hidden">Summary</h2>
+      <p class="govuk-body-l">The planning.data.gov.uk is collecting data about {{ page_data.dataset.name }} from {{ page_data.organisation.name | capitalize }}.</p>
+      <h2 class="govuk-heading-l">Data sources</h2>
+    </div>
+    <!-- /.govuk-grid-column-two-thirds -->
+  </div>
+  <!-- /.govuk-grid-row -->
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column govuk-grid-column-two-thirds">
+      {{
+        appEndpointCard({
+          'title': 'Source 1',
+          'endpoint': {
+            'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
           },
-          'value': {
-            'html': govukTag({ 'text': 'Provided', 'classes': 'govuk-tag--green' })
+          'documentation': {
+            'url': 'https://www.borchestercouncil.gov.uk/data/'
           }
-        },
-        {
-          'key': {
-            'text': "Last checked for new data"
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column govuk-grid-column-one-third">
+      <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom">Actions</h3>
+      <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-6">
+        <li><a href="#">View data from source 1</a></li>
+        <li>Is this source correct? If not you can <a href="#">report a problem</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- /.govuk-grid-row -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column govuk-grid-column-two-thirds">
+      {{
+        appEndpointCard({
+          'title': 'Source 2',
+          'endpoint': {
+            'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
           },
-          'value': {
-            'text': "30th November 2022"
+          'documentation': {
+            'url': 'https://www.borchestercouncil.gov.uk/data/'
           }
-        },
-        {
-          'key': {
-            'text': "Last time new data was found"
-          },
-          'value': {
-            'text': "10th September 2021"
-          }
-        },
-      ]
-    })
-  }}
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column govuk-grid-column-one-third">
+      <h3 class="govuk-heading-m app-heading-section app-heading-section--bottom">Actions</h3>
+      <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-6">
+        <li><a href="#">View data from source 2</a></li>
+        <li>Is this source correct? If not you can <a href="#">report a problem</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- /.govuk-grid-row -->
 
-  <hr class="govuk-section-break govuk-section-break--s">
-
-  <h3 class="govuk-heading-m">Endpoints</h3>
-
-  {{
-    appEndpointCard({
-      'title': 'Endpoint 1',
-      'endpoint': {
-        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
-      },
-      'documentation': {
-        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json'
-      }
-    })
-  }}
-
-  {{
-    appEndpointCard({
-      'title': 'Endpoint 2',
-      'endpoint': {
-        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json',
-      },
-      'documentation': {
-        'url': 'https://www.borchestercouncil.gov.uk/data/feed/example.json'
-      }
-    })
-  }}
-
-  <h3 class="govuk-heading-m">Description</h3>
+  {# <h3 class="govuk-heading-m">Description</h3>
   <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe, ad consequatur qui eaque odit nihil doloribus magni dolores esse pariatur soluta, aliquid assumenda! Culpa illo omnis quis consequatur rem vitae.</p>
   <p>Learn more about the <a href="#">conservation area dataset</a>.</p>
 
   <hr class="govuk-section-break govuk-section-break--m">
 
   <h3 class="govuk-heading-m">Why is this data published?</h3>
-  <p>{{ page_data.dataset.name }} data is not required to be published by legislation but {{ page_data.organisation.name }} is expected to publish it by agreement with the Department for Levelling Up, Housing and Communities.</p>
+  <p>{{ page_data.dataset.name }} data is not required to be published by legislation but {{ page_data.organisation.name }} is expected to publish it by agreement with the Department for Levelling Up, Housing and Communities.</p> #}
 
-{% endblock content_primary %}
+{% endblock content %}
 
 {% block content_secondary %}{% endblock content_secondary %}

@@ -14,8 +14,8 @@
     }
     .app-card {
       &__title {
-        // background: $govuk-brand-colour;
-        background: govuk-colour("dark-grey");
+        background: $govuk-brand-colour;
+        // background: govuk-colour("dark-grey");
         color: white;
         @include govuk-font($size: 19, $weight: bold);
         margin: 0;
@@ -28,16 +28,7 @@
         @include govuk-font($size: 19, $weight: bold);
       }
       &__code {
-        font-family: ui-monospace,
-        Menlo, Monaco,
-        "Cascadia Mono", "Segoe UI Mono",
-        "Roboto Mono",
-        "Oxygen Mono",
-        "Ubuntu Monospace",
-        "Source Code Pro",
-        "Fira Mono",
-        "Droid Sans Mono",
-        "Courier New", monospace;
+        font-family: $app-font-mono;
         border: 1px solid $govuk-border-colour;
         display: block;
         padding: govuk-spacing(2) govuk-spacing(4) govuk-spacing(2) govuk-spacing(2);
