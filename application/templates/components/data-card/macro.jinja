@@ -8,12 +8,6 @@
     <div class="app-card__row">
       <p><a href="{{ params.data.url }}">{{ params.data.url }}</a></p>
     </div>
-    {% if params.data.json %}
-      <div class="app-card__row">
-          <p class="app-card__label">Additional properties</p>
-          <code class="app-card__code">{{ params.data.json }}</code>
-      </div>
-    {%  endif %}
     {% if params.data.geometry %}
       <div class="app-card__row">
         <details class="govuk-details" data-module="govuk-details">
@@ -26,6 +20,12 @@
             {{ params.data.geometry }}
           </div>
         </details>
+      </div>
+    {%  endif %}
+    {% if params.data.json %}
+      <div class="app-card__row">
+        <p class="app-card__label">Additional properties</p>
+        <code class="app-card__code">{{ params.data.json }}</code>
       </div>
     {%  endif %}
   {% endif %}
