@@ -23,12 +23,12 @@
         },
         'documentation': {
           'url': source.doucmentation_url
+        },
+        'data' :{
+          'url': url_for('provider.provider_data', organisation=organisation.organisation, dataset=dataset, source=source.source, endpoint_id=source.endpoint)
         }
       })
     }}
-    <p>
-      <a href="{{ url_for('provider.provider_data', organisation=organisation.organisation, dataset=dataset, source=source.source, endpoint_id=source.endpoint) }}">See data we've collected</a>
-    </p>
 
   {% endfor %}
 

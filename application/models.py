@@ -64,7 +64,6 @@ class Entity(db.Model):
     organisation = db.relationship("Organisation", back_populates="entities")
 
 
-# TODO - move resource to linked table, primary key is source and endpoint
 class SourceEndpointDataset(db.Model):
     source = db.Column(db.Text, primary_key=True, nullable=False)
     endpoint = db.Column(db.Text, primary_key=True, nullable=False)
@@ -78,25 +77,11 @@ class SourceEndpointDataset(db.Model):
     organisation = db.relationship(
         "Organisation", back_populates="source_endpoint_datasets"
     )
-    resources = db.relationship("Resources", back_populates="source_endpoint")
 
 
-class Resources(db.Model):
-    resource = db.Column(db.Text, primary_key=True, nullable=False)
-    source_id = db.Column(db.Text, nullable=False)
-    endpoint_id = db.Column(db.Text, nullable=False)
-    dataset_id = db.Column(db.Text, nullable=False)
-    source_endpoint = db.relationship(
-        "SourceEndpointDataset", back_populates="resources"
-    )
-
-    __table_args__ = (
-        db.ForeignKeyConstraint(
-            [source_id, endpoint_id, dataset_id],
-            [
-                SourceEndpointDataset.source,
-                SourceEndpointDataset.endpoint,
-                SourceEndpointDataset.dataset,
-            ],
-        ),
-    )
+class Resource(db.Model):
+    resource = db.Column(db.Text, nullable=False, primary_key=True)
+    source = db.Column(db.Text, nullable=False, primary_key=True)
+    endpoint = db.Column(db.Text, nullable=False, primary_key=True)
+    dataset = db.Column(db.Text, nullable=False, primary_key=True)
+    organisation = db.Column(db.Text, nullable=False, primary_key=True)

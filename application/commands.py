@@ -15,6 +15,7 @@ from application.models import (
     Dataset,
     Entity,
     Organisation,
+    Resource,
     SourceEndpointDataset,
     organisation_dataset,
 )
@@ -115,6 +116,30 @@ WHERE s.source = sp.source
   AND (sp.pipeline is not null OR sp.pipeline != '');"""
 
 
+resource_sql = """
+SELECT
+    r.resource,
+    s.source,
+    re.endpoint,
+    rd.dataset,
+    ro.organisation
+FROM resource r, resource_organisation ro, resource_endpoint re, resource_dataset rd, endpoint e, source s
+WHERE r.resource = ro.resource
+AND r.resource = re.resource
+AND r.resource = rd.resource
+AND re.endpoint = e.endpoint
+AND e.endpoint = s.endpoint
+AND (r.end_date is null OR r.end_date == '')
+AND (r.end_date is null OR r.end_date == '')
+AND (e.end_date is null OR e.end_date == '')
+AND (s.end_date is null OR s.end_date == '')
+AND (
+    ro.organisation LIKE 'local-authority%'
+    OR ro.organisation LIKE 'development-corporation%'
+    OR ro.organisation LIKE 'national-park-authority%'
+  );"""
+
+
 @data_cli.command("load")
 def load_data():
 
@@ -185,6 +210,16 @@ def load_data():
         db.session.commit()
         logger.info("finished loading sources")
 
+        logger.info("loading resources")
+        rows = cursor.execute(resource_sql.strip())
+        data = [dict(row) for row in rows]
+        for row in data:
+            row["organisation"] = row["organisation"].replace("-eng", "")
+        stmt = insert(Resource).values(data)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished loading resources")
+
     except Exception as e:
         logger.exception(e)
 
@@ -194,6 +229,10 @@ def load_data():
 
 @data_cli.command("drop")
 def drop_data():
+
+    stmt = delete(Resource)
+    db.session.execute(stmt)
+    db.session.commit()
 
     stmt = delete(SourceEndpointDataset)
     db.session.execute(stmt)

@@ -1,7 +1,8 @@
+import requests
 from flask import Blueprint, abort, render_template, url_for
 from sqlalchemy import func
 
-from application.models import Entity, Organisation, SourceEndpointDataset
+from application.models import Dataset, Entity, Organisation, Resource
 
 provider = Blueprint("provider", __name__, template_folder="templates")
 
@@ -29,7 +30,7 @@ def provider_summary(organisation):
         dataset = item[0]
         dataset_name = dataset.replace("-", " ").title()
         url = url_for(
-            "provider.provider_dataset", organisation=organisation, dataset=dataset
+            "provider.provider_sources", organisation=organisation, dataset=dataset
         )
         if item[1] > 0:
             html = f"<a href='{url}'>{dataset_name}</a>"
@@ -84,11 +85,38 @@ def provider_sources(organisation, dataset):
     "/provider/<string:organisation>/<string:dataset>/source/<string:source>/endpoint/<string:endpoint_id>"
 )
 def provider_data(organisation, dataset, source, endpoint_id):
+    from flask import current_app
+
+    datasette_url = current_app.config["DATASETTE_URL"]
+
+    organisation = Organisation.query.get(organisation)
+    dataset = Dataset.query.get(dataset)
+
     # param for endpoint named endpoint_id to avoid clash with builtin param name in Flask.url_for
-    source = SourceEndpointDataset.query.filter(
-        SourceEndpointDataset.organisation_id == organisation,
-        SourceEndpointDataset.dataset == dataset,
-        SourceEndpointDataset.source == source,
-        SourceEndpointDataset.endpoint == endpoint_id,
-    ).one()
-    return "OK placeholder"
+    resources = Resource.query.filter(
+        Resource.organisation == organisation.organisation,
+        Resource.dataset == dataset.dataset,
+        Resource.source == source,
+        Resource.endpoint == endpoint_id,
+    ).all()
+
+    resource_ids = ",".join(["'" + r.resource + "'" for r in resources])
+    resource_url = f"{datasette_url}/{dataset.dataset}.json"
+    resource_sql = f"""
+        SELECT e.*
+        FROM entity e
+        WHERE e.entity IN (SELECT DISTINCT(f.entity)
+                                FROM fact f, fact_resource fr
+                                WHERE f.fact = fr.fact
+                                AND fr.resource IN ({resource_ids}))""".strip()
+    params = {"sql": resource_sql, "_shape": "array"}
+    response = requests.get(resource_url, params=params)
+    response.raise_for_status()
+    data = response.json()
+
+    return render_template(
+        "data.html",
+        organisation=organisation,
+        data=data,
+        page_data={"title": f"{dataset.name} data"},
+    )
