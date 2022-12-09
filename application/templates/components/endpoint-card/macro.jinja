@@ -22,9 +22,8 @@
       {% if params.data %}
         <div class="app-card__row">
           <p class="app-card__label">{{ params.data.text | d('Data') }}</p>
-          <p class="govuk-hint">{{ params.data.hint | d('The data generated from the source URL') }}</p>
           <p class="app-card__link">
-            <a href="{{ params.data.url | d('#' )}}" class="govuk-link">{{ params.data.url | d('#') }}</a>
+            <a href="{{ params.data.url | d('#' )}}" class="govuk-link">View the data collected</a>
           </p>
         </div>
       {% endif %}
