@@ -1,0 +1,32 @@
+{% extends "layouts/page.html" %}
+{% block pageTitle %}Feedback{% endblock %}
+
+{% block content_primary %}
+
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom"
+      id="data-from-this-organisation">{{ organisation.name | title }}</h2>
+
+  <p class="govuk-hint">We have the following data for {{ dataset }} from {{ organisation.name | title }}
+    being collected by planning.data.gov.uk.</p>
+
+  <hr class="govuk-section-break govuk-section-break--l ">
+
+  <h3 class="govuk-heading-m">Data items generated</h3>
+
+  {% for d in data %}
+    {{
+      appDataCard({
+        'title': d.name,
+        'data': {
+          'prefix': d.prefix,
+          'reference': d.reference,
+          'url': 'https://www.planning.data.gov.uk/entity/'+ d.entity|string,
+          'json': d.json,
+          'geometry': d.geometry
+        },
+      })
+    }}
+  {% endfor %}
+
+
+{% endblock %}

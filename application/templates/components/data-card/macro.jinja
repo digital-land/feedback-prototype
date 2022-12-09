@@ -1,0 +1,35 @@
+{#TODO @PaulSmith - again rip this out once you've had a look - this is just to show what is available on page to show user #}
+
+{% macro appDataCard(params={}) %}
+  <article class="app-card app-card--endpoint">
+    <{{ params.headingLevel | d('h3')}} class="app-card__title">{{ params.title }}</{{ params.headingLevel | d('h3')}}>
+  <div class="app-card__body">
+  {% if params.data %}
+    <div class="app-card__row">
+      <p><a href="{{ params.data.url }}">{{ params.data.url }}</a></p>
+    </div>
+    {% if params.data.json %}
+      <div class="app-card__row">
+          <p class="app-card__label">Additional properties</p>
+          <code class="app-card__code">{{ params.data.json }}</code>
+      </div>
+    {%  endif %}
+    {% if params.data.geometry %}
+      <div class="app-card__row">
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            View geometry
+          </span>
+          </summary>
+          <div class="govuk-details__text">
+            {{ params.data.geometry }}
+          </div>
+        </details>
+      </div>
+    {%  endif %}
+  {% endif %}
+
+  </div>
+  </article>
+{% endmacro %}
