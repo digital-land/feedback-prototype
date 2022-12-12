@@ -10,11 +10,15 @@
 
 {% block content_primary %}
 
+  <h2 class="govuk-heading-l">Data catalogue</h2>
+
+  <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.title }}.</p>
+
   {% set itemsLabel = 'Total'  %}
 
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-this-organisation">Data provided by {{ organisation.name | title }}</h2>
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-data">Expected datasets</h2>
 
-  <p class="govuk-hint">{{ organisation.name | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
+  <p class="govuk-hint">{{ page_data.title | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
 
   {{
     govukTable({
@@ -33,7 +37,7 @@
 
   <hr class="govuk-section-break govuk-section-break--l ">
 
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-other-organisations">Data provided by other organisations</h2>
+  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-other-organisations">Expected datasets</h2>
 
   <p class="govuk-hint">The following data is being collected from organisations other than {{ organisation.name | title }}.</p>
 
@@ -61,38 +65,5 @@
         ]
     })
     }}
-
-  <hr class="govuk-section-break govuk-section-break--l">
-
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-needed">Data we need</h2>
-
-  <p class="govuk-hint">This is a list of data we would like to collect from {{ organisation.name | title }} but do not yet have sources for.</p>
-
-  {{
-    govukTable({
-      'head': [
-        {
-          'text': 'Dataset name'
-        },
-        {
-          'text': itemsLabel,
-          'format': 'numeric'
-        }
-      ],
-      'rows': [
-        [
-          {
-            'text': 'Central activities zones'
-          },
-          {
-            'text': '0',
-            'format': 'numeric'
-          },
-        ],
-        ]
-    })
-    }}
-
-  <hr class="govuk-section-break govuk-section-break--l">
 
 {% endblock %}
