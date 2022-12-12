@@ -77,7 +77,10 @@ def provider_sources(organisation, dataset):
         organisation=organisation,
         dataset=dataset,
         sources=sources,
-        page_data={"title": f"{dataset.replace('-', ' ').capitalize()} sources"},
+        page_data={
+            "title": f"{dataset.replace('-', ' ').capitalize()} data",
+            "lede": "Provided by " + organisation.name,
+        },
     )
 
 

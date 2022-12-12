@@ -1,35 +1,47 @@
+
 {% extends "layouts/page.html" %}
 {% block pageTitle %}Feedback{% endblock %}
 
 {% block content_primary %}
 
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom"
-      id="data-from-this-organisation">{{ organisation.name | title }}</h2>
+  <h2 class="govuk-heading-l">Data sources</h2>
+  {% set whatIsASourceContent %}
+  <p class="govuk-body">A data source a place on the internet that planning.data.gov.uk collects data from. This is typically a:</p>
+  <ul class="govuk-list govuk-list--spaced">
+    <li>Data URL (sometimes called an 'Endpoint'), which is the web address the digital data was collected from.</li>
+    <li>Documentation page, which is the web page that describes and links to Data URL</li>
+  </ul>
+  {% endset %}
 
-  <p class="govuk-hint">We have the following sources of data for {{ datast }} from {{ organisation.name | title }}
-    being collected by planning.data.gov.uk.</p>
-
-  <hr class="govuk-section-break govuk-section-break--l ">
-
-  <h3 class="govuk-heading-m">Sources of data</h3>
+  {{
+    govukDetails({
+      'summaryText': 'What is a data source?',
+      'html': whatIsASourceContent
+    })
+  }}
 
   {% for source in sources %}
-
+    {% set sourceLabel = 'Source ' + (loop.index | string) %}
     {{
       appEndpointCard({
-        'title': 'Source of data download',
+        'title': sourceLabel,
+        'link': {
+          'url': '#',
+          'text': 'View data from ' + sourceLabel
+        },
         'endpoint': {
           'url': source.endpoint_url,
         },
         'documentation': {
           'url': source.doucmentation_url
-        },
-        'data' :{
-          'url': url_for('provider.provider_data', organisation=organisation.organisation, dataset=dataset, source=source.source, endpoint_id=source.endpoint)
         }
       })
     }}
-
   {% endfor %}
 
 {% endblock %}
+
+{% block content_secondary %}
+  <h3 class="govuk-heading-s app-heading-section app-heading-section--top">Support</h3>
+  <p>Are these sources correct? If not you can <a href="#">report a problem</a></p>
+{% endblock content_secondary %}

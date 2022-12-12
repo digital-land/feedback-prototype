@@ -13,13 +13,19 @@
       }
     }
     .app-card {
+      &__header {
+        background: govuk-colour("light-grey");
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // background: $govuk-brand-colour;
+        padding: govuk-spacing(2) govuk-spacing(2);
+        border-bottom: 1px solid $govuk-border-colour;
+      }
       &__title {
-        background: $govuk-brand-colour;
-        // background: govuk-colour("dark-grey");
-        color: white;
+
         @include govuk-font($size: 19, $weight: bold);
         margin: 0;
-        padding: govuk-spacing(2) govuk-spacing(2);
       }
       &__body {
         padding: govuk-spacing(4);
@@ -36,11 +42,12 @@
         overflow: hidden;
         word-break: break-all;
         line-height: 1.1;
+        border-radius: 4px;
       }
       &__link {
         word-break: break-all;
       }
     }
-    background: govuk-colour("light-grey");
+    border: 1px solid $govuk-border-colour;
   }
 }
