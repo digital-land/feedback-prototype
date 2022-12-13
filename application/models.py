@@ -85,3 +85,9 @@ class Resource(db.Model):
     endpoint = db.Column(db.Text, nullable=False, primary_key=True)
     dataset = db.Column(db.Text, nullable=False, primary_key=True)
     organisation = db.Column(db.Text, nullable=False, primary_key=True)
+
+
+class ProvisionReason(db.Model):
+    provision_reason = db.Column(db.Text, nullable=False, primary_key=True)
+    description = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)

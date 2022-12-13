@@ -14,56 +14,35 @@
 
   <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.title }}.</p>
 
-  {% set itemsLabel = 'Total'  %}
-
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-data">Expected datasets</h2>
-
   <p class="govuk-hint">{{ page_data.title | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
 
-  {{
-    govukTable({
-      'head': [
-        {
-          'text': 'Dataset name'
-        },
-        {
-          'text': itemsLabel,
-          'format': 'numeric'
-        }
-      ],
-      'rows': project_datasets
-    })
-    }}
+  {% set itemsLabel = 'Total sources'  %}
 
-  <hr class="govuk-section-break govuk-section-break--l ">
+  {% for pr in provision_reasons %}
+    {% if sources_by_provision_reason[pr.provision_reason] %}
 
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="data-from-other-organisations">Expected datasets</h2>
+    <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-data">{{ pr.name }}</h2>
 
-  <p class="govuk-hint">The following data is being collected from organisations other than {{ organisation.name | title }}.</p>
+    <p class="govuk-body">{{ pr.description }}</p>
 
-  {{
-    govukTable({
-      'head': [
-        {
-          'text': 'Dataset name'
-        },
-        {
-          'text': itemsLabel,
-          'format': 'numeric'
-        }
-      ],
-      'rows': [
-        [
-          {
-            'text': 'Conservation areas'
-          },
-          {
-            'text': '58',
-            'format': 'numeric'
-          },
-        ],
-        ]
-    })
-    }}
+      {{
+        govukTable({
+          'head': [
+            {
+              'text': 'Dataset name'
+            },
+            {
+              'text': itemsLabel,
+              'format': 'numeric'
+            }
+          ],
+          'rows': sources_by_provision_reason[pr.provision_reason]
+        })
+      }}
+
+      <hr class="govuk-section-break govuk-section-break--l">
+
+    {% endif %}
+  {% endfor %}
 
 {% endblock %}

@@ -1,10 +1,39 @@
 import requests
-from flask import Blueprint, abort, render_template, url_for
-from sqlalchemy import func
+from flask import Blueprint, abort, render_template
+from sqlalchemy import text
 
-from application.models import Dataset, Entity, Organisation, Resource
+from application.extensions import db
+from application.models import Dataset, Organisation, ProvisionReason, Resource
 
 provider = Blueprint("provider", __name__, template_folder="templates")
+
+
+provider_source_sql = text(
+    """SELECT
+    od.organisation,
+    d.name, d.dataset,
+    od.project,
+    od.provision_reason,
+    od.provision_reason_name,
+    count(s.source) as number_of_sources
+FROM  organisation_dataset od
+LEFT JOIN source_endpoint_dataset s
+ON (od.dataset = s.dataset and od.organisation = s.organisation_id)
+JOIN dataset d on (od.dataset = d.dataset)
+WHERE od.organisation = :organisation
+GROUP BY od.organisation, d.name, d.dataset, od.project, od.provision_reason, od.provision_reason_name
+ORDER BY d.name, od.project, od.provision_reason_name"""
+)
+
+
+ordered_provision_reasons = [
+    "statutory",
+    "expected",
+    "encouraged",
+    "prospective",
+    "authoritative",
+    "alternative",
+]
 
 
 @provider.route("/provider/<string:organisation>")
@@ -13,56 +42,32 @@ def provider_summary(organisation):
     if not org:
         return abort(404)
 
-    project_dataset_counts = org.project_dataset_counts()
+    provision_reasons = []
+    for p in ordered_provision_reasons:
+        provision_reasons.append(ProvisionReason.query.get(p))
 
-    other_datasets_counts = (
-        Entity.query.with_entities(Entity.dataset, func.count(Entity.dataset))
-        .filter(
-            Entity.organisation_entity == org.entity,
-            Entity.dataset.not_in([ds[0] for ds in project_dataset_counts]),
-        )
-        .group_by(Entity.dataset)
-        .all()
-    )
+    with db.session() as session:
+        sources = session.execute(
+            provider_source_sql, {"organisation": org.organisation}
+        ).fetchall()
 
-    project_datasets = []
-    for item in project_dataset_counts:
-        dataset = item[0]
-        dataset_name = dataset.replace("-", " ").title()
-        url = url_for(
-            "provider.provider_sources", organisation=organisation, dataset=dataset
-        )
-        if item[1] > 0:
-            html = f"<a href='{url}'>{dataset_name}</a>"
-            project_datasets.append(
-                [
-                    {"html": html},
-                    {"text": item[1], "format": "numeric"},
-                ]
-            )
-        else:
-            project_datasets.append(
-                [
-                    {"text": dataset_name},
-                    {"text": item[1], "format": "numeric"},
-                ]
-            )
-
-    other_datasets = []
-    for item in other_datasets_counts:
-        dataset_name = item[0].replace("-", " ").title()
-        other_datasets.append(
+    sources_by_provision_reason = {}
+    for p in provision_reasons:
+        group = [
             [
-                {"text": dataset_name},
-                {"text": item[1], "format": "numeric"},
+                {"text": s.name},
+                {"text": s.number_of_sources, "format": "numeric"},
             ]
-        )
+            for s in sources
+            if s.provision_reason == p.provision_reason
+        ]
+        sources_by_provision_reason[p.provision_reason] = group
 
     return render_template(
         "provider.html",
         organisation=organisation,
-        project_datasets=project_datasets,
-        other_datasets=other_datasets,
+        sources_by_provision_reason=sources_by_provision_reason,
+        provision_reasons=provision_reasons,
         page_data={"title": org.name, "summary": {"show": True}},
     )
 

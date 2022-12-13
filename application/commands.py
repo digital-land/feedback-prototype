@@ -15,6 +15,7 @@ from application.models import (
     Dataset,
     Entity,
     Organisation,
+    ProvisionReason,
     Resource,
     SourceEndpointDataset,
     organisation_dataset,
@@ -140,6 +141,11 @@ AND (
   );"""
 
 
+provision_reason_sql = (
+    "SELECT provision_reason, name, description FROM provision_reason;"
+)
+
+
 @data_cli.command("load")
 def load_data():
 
@@ -219,6 +225,14 @@ def load_data():
         db.session.execute(stmt)
         db.session.commit()
         logger.info("finished loading resources")
+
+        logger.info("loading provision reason")
+        rows = cursor.execute(provision_reason_sql.strip())
+        data = [dict(row) for row in rows]
+        stmt = insert(ProvisionReason).values(data)
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("finished provision reason")
 
     except Exception as e:
         logger.exception(e)
