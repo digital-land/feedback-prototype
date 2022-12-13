@@ -37,7 +37,7 @@ ordered_provision_reasons = [
 
 
 @provider.route("/provider/<string:organisation>")
-def provider_summary(organisation):
+def summary(organisation):
     org = Organisation.query.get(organisation)
     if not org:
         return abort(404)
@@ -60,7 +60,7 @@ def provider_summary(organisation):
 
                 if s.number_of_sources > 0:
                     url = url_for(
-                        "provider.provider_sources",
+                        "provider.sources",
                         organisation=s.organisation,
                         dataset=s.dataset,
                     )
@@ -86,7 +86,7 @@ def provider_summary(organisation):
 
 
 @provider.route("/provider/<string:organisation>/<string:dataset>")
-def provider_sources(organisation, dataset):
+def sources(organisation, dataset):
     organisation = Organisation.query.get(organisation)
     sources = [s for s in organisation.source_endpoint_datasets if s.dataset == dataset]
 
@@ -105,7 +105,7 @@ def provider_sources(organisation, dataset):
 @provider.route(
     "/provider/<string:organisation>/<string:dataset>/source/<string:source>/endpoint/<string:endpoint_id>"
 )
-def provider_data(organisation, dataset, source, endpoint_id):
+def data(organisation, dataset, source, endpoint_id):
     from flask import current_app
 
     datasette_url = current_app.config["DATASETTE_URL"]

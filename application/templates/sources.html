@@ -20,20 +20,21 @@
     })
   }}
 
-  {% for source in sources %}
+  {% for s in sources %}
     {% set sourceLabel = 'Source ' + (loop.index | string) %}
+    {% set url = url_for("provider.data", organisation=s.organisation.organisation, dataset=s.dataset, source=s.source, endpoint_id=s.endpoint) %}
     {{
       appEndpointCard({
         'title': sourceLabel,
         'link': {
-          'url': '#',
+          'url': url,
           'text': 'View data from ' + sourceLabel
         },
         'endpoint': {
-          'url': source.endpoint_url,
+          'url': s.endpoint_url,
         },
         'documentation': {
-          'url': source.doucmentation_url
+          'url': s.documentation_url
         }
       })
     }}
