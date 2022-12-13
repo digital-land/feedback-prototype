@@ -1,5 +1,5 @@
 import requests
-from flask import Blueprint, abort, render_template
+from flask import Blueprint, abort, render_template, url_for
 from sqlalchemy import text
 
 from application.extensions import db
@@ -53,15 +53,28 @@ def provider_summary(organisation):
 
     sources_by_provision_reason = {}
     for p in provision_reasons:
-        group = [
-            [
-                {"text": s.name},
-                {"text": s.number_of_sources, "format": "numeric"},
-            ]
-            for s in sources
-            if s.provision_reason == p.provision_reason
-        ]
-        sources_by_provision_reason[p.provision_reason] = group
+        groups = []
+        for s in sources:
+            if s.provision_reason == p.provision_reason:
+                name = {"text": s.name}
+
+                if s.number_of_sources > 0:
+                    url = url_for(
+                        "provider.provider_sources",
+                        organisation=s.organisation,
+                        dataset=s.dataset,
+                    )
+                    html = f"<a href='{url}'>{s.number_of_sources}</a>"
+                    number_of_sources = {"html": html, "format": "numeric"}
+
+                else:
+                    number_of_sources = {
+                        "text": s.number_of_sources,
+                        "format": "numeric",
+                    }
+
+                groups.append((name, number_of_sources))
+        sources_by_provision_reason[p.provision_reason] = groups
 
     return render_template(
         "provider.html",
