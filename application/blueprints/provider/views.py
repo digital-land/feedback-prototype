@@ -96,7 +96,11 @@ def summary(organisation):
         sources_by_provision_reason=sources_by_provision_reason,
         provision_reasons=provision_reasons,
         provision_reason_copy=provision_reason_copy,
-        page_data={"title": org.name, "summary": {"show": True}},
+        page_data={
+            "title": org.name,
+            "caption": "Data provider",
+            "summary": {"show": True},
+        },
     )
 
 
