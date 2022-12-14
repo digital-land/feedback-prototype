@@ -12,9 +12,7 @@
 
   <h2 class="govuk-heading-l">Data catalogue</h2>
 
-  <p class="govuk-body-l">Planning and housing datasets created using data provided by {{ page_data.title }}.</p>
-
-  <p class="govuk-hint">{{ page_data.title | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
+  <p class="govuk-body-l">{{ page_data.title | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
 
   {% set itemsLabel = 'Total sources'  %}
 
@@ -23,22 +21,24 @@
 
     <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-data">{{ pr.name }}</h2>
 
-    <p class="govuk-body">{{ pr.description }}</p>
+    <p class="govuk-hint">{{ pr.description }}</p>
 
       {{
         govukTable({
           'head': [
             {
-              'text': 'Dataset name'
+              'text': 'Dataset'
             },
             {
-              'text': itemsLabel,
+              'html': '<span class="govuk-visually-hidden">' + itemsLabel + '</span>',
               'format': 'numeric'
             }
           ],
           'rows': sources_by_provision_reason[pr.provision_reason]
         })
       }}
+
+      {{ sources_by_provision_reason[pr.provision_reason] | debug | safe }}
 
       <hr class="govuk-section-break govuk-section-break--l">
 

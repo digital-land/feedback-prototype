@@ -64,12 +64,15 @@ def summary(organisation):
                         organisation=s.organisation,
                         dataset=s.dataset,
                     )
-                    html = f"<a href='{url}'>{s.number_of_sources}</a>"
+                    name = {"html": f"<a href='{url}'>{s.name}</a>"}
+                    html = f"<span class='govuk-tag govuk-tag--green'>{s.number_of_sources} source"
+                    html += ("/s" if s.number_of_sources > 1 else "") + "</span>"
                     number_of_sources = {"html": html, "format": "numeric"}
 
                 else:
+                    html = "<span class='govuk-tag govuk-tag--red'>No sources</span>"
                     number_of_sources = {
-                        "text": s.number_of_sources,
+                        "html": html,
                         "format": "numeric",
                     }
 
