@@ -66,7 +66,7 @@ def summary(organisation):
                     )
                     name = {"html": f"<a href='{url}'>{s.name}</a>"}
                     html = f"<span class='govuk-tag govuk-tag--green'>{s.number_of_sources} source"
-                    html += ("/s" if s.number_of_sources > 1 else "") + "</span>"
+                    html += ("s" if s.number_of_sources > 1 else "") + "</span>"
                     number_of_sources = {"html": html, "format": "numeric"}
 
                 else:
