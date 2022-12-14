@@ -14,7 +14,7 @@
 
   <p class="govuk-body-l">{{ page_data.title | title }} currently publishes the following datasets which are being regularly collected by planning.data.gov.uk.</p>
 
-  {% set itemsLabel = 'Total sources'  %}
+  {% set itemsLabel = 'Data sources'  %}
 
   {% for pr in provision_reasons %}
     {% if sources_by_provision_reason[pr.provision_reason] %}
@@ -30,7 +30,7 @@
               'text': 'Dataset'
             },
             {
-              'html': '<span class="govuk-visually-hidden">' + itemsLabel + '</span>',
+              'html': '<span class="govuk-visually-hiddens">' + itemsLabel + '</span>',
               'format': 'numeric'
             }
           ],

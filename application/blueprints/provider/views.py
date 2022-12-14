@@ -70,7 +70,7 @@ def summary(organisation):
                     number_of_sources = {"html": html, "format": "numeric"}
 
                 else:
-                    html = "<span class='govuk-tag govuk-tag--red'>No sources</span>"
+                    html = "<span class='govuk-tag govuk-tag--red'>None</span>"
                     number_of_sources = {
                         "html": html,
                         "format": "numeric",
