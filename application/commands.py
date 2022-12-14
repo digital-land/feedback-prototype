@@ -249,3 +249,61 @@ def drop_data():
     db.session.commit()
 
     logger.info("all data deleted")
+
+
+@data_cli.command("entity-numbers")
+def entity_numbers():
+    from flask import current_app
+
+    datasette_url = current_app.config["DATASETTE_URL"]
+
+    datasets = Dataset.query.all()
+
+    sql = """SELECT DISTINCT(f.entity) AS entity
+    FROM fact f, fact_resource fr
+    WHERE f.fact = fr.fact
+    AND fr.resource = ?"""
+
+    for dataset in datasets:
+        print(f"Checking for and processing data for {dataset.dataset}")
+        try:
+            sqlite_ = requests.get(f"{datasette_url}/{dataset.dataset}.db", stream=True)
+            sqlite_file_name = None
+            if sqlite_.status_code == 200:
+                out = tempfile.NamedTemporaryFile(
+                    mode="w+b", suffix=".db", delete=False
+                )
+                sqlite_file_name = out.name
+                for chunk in sqlite_.iter_content(chunk_size=1024):
+                    if chunk:
+                        out.write(chunk)
+                out.flush()
+                out.close()
+
+                resources = Resource.query.filter(
+                    Resource.dataset == dataset.dataset
+                ).all()
+                for resource in resources:
+                    print(
+                        f"Load entity numbers for dataset {dataset.dataset} and resource {resource.resource}"
+                    )
+                    conn = sqlite3.connect(sqlite_file_name)
+                    conn.row_factory = sqlite3.Row
+                    cursor = conn.cursor()
+                    rows = cursor.execute(sql, [resource.resource]).fetchall()
+                    entities = [r["entity"] for r in rows]
+                    resource.entity_numbers = [entities]
+                    db.session.add(resource)
+                    db.session.commit()
+                    print(
+                        f"Set {len(entities)} entity numbers for {resource.resource} from dataset {dataset}"
+                    )
+            else:
+                print(f"No database at url: {datasette_url}/{dataset.dataset}.db")
+
+        except Exception as e:
+            logger.exception(e)
+
+        finally:
+            if sqlite_file_name:
+                os.unlink(sqlite_file_name)

@@ -36,6 +36,17 @@ ordered_provision_reasons = [
 ]
 
 
+# TODO @PaulSmith - override the provision reason copy here
+provision_reason_copy = {
+    "statutory": "The organisation has a statutory duty to provide data to this standard",
+    "expected": "The organisation should provide data as a member of the project developing the specification",
+    "encouraged": "The organisation is encouraged to provide data to this standard",
+    "prospective": "The organisation is responsible for data covered by this prospective specificaton",
+    "authoritative": "The organisation is the authoritative source of this data",
+    "alternative": "The organisation provides this data",
+}
+
+
 @provider.route("/provider/<string:organisation>")
 def summary(organisation):
     org = Organisation.query.get(organisation)
@@ -84,6 +95,7 @@ def summary(organisation):
         organisation=organisation,
         sources_by_provision_reason=sources_by_provision_reason,
         provision_reasons=provision_reasons,
+        provision_reason_copy=provision_reason_copy,
         page_data={"title": org.name, "summary": {"show": True}},
     )
 

@@ -1,3 +1,6 @@
+from sqlalchemy import BigInteger
+from sqlalchemy.dialects.postgresql import ARRAY
+
 from application.extensions import db
 
 organisation_dataset = db.Table(
@@ -57,6 +60,7 @@ class Resource(db.Model):
     endpoint = db.Column(db.Text, nullable=False, primary_key=True)
     dataset = db.Column(db.Text, nullable=False, primary_key=True)
     organisation = db.Column(db.Text, nullable=False, primary_key=True)
+    entity_numbers = db.Column(ARRAY(BigInteger))
 
 
 class ProvisionReason(db.Model):

@@ -21,7 +21,7 @@
 
     <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom" id="expected-data">{{ pr.name }}</h2>
 
-    <p class="govuk-hint">{{ pr.description }}</p>
+    <p class="govuk-hint">{{ provision_reason_copy[pr.provision_reason] }}</p>
 
       {{
         govukTable({
