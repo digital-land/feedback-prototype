@@ -3,13 +3,12 @@
 
 {% block content_primary %}
 
-  <h2 class="govuk-heading-m app-heading-section app-heading-section--bottom"
-      id="data-from-this-organisation">{{ organisation.name | title }}</h2>
-
   <p class="govuk-hint">We have the following data for {{ dataset }} from {{ organisation.name | title }}
-    being collected by planning.data.gov.uk.</p>
+    being collected by planning.data.gov.uk from.</p>
 
   <hr class="govuk-section-break govuk-section-break--l ">
+
+  {{ data | debug | safe }}
 
   <h3 class="govuk-heading-m">Data collected</h3>
 
