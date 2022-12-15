@@ -3,7 +3,13 @@ from flask import Blueprint, abort, render_template, url_for
 from sqlalchemy import text
 
 from application.extensions import db
-from application.models import Dataset, Organisation, ProvisionReason, Resource
+from application.models import (
+    Dataset,
+    Organisation,
+    ProvisionReason,
+    Resource,
+    SourceEndpointDataset,
+)
 
 provider = Blueprint("provider", __name__, template_folder="templates")
 
@@ -131,7 +137,12 @@ def data(organisation, dataset, source, endpoint_id):
 
     organisation = Organisation.query.get(organisation)
     dataset = Dataset.query.get(dataset)
-
+    endpoint = (
+        SourceEndpointDataset.query.with_entities(SourceEndpointDataset.endpoint_url)
+        .filter(SourceEndpointDataset.endpoint == endpoint_id)
+        .first()
+    )
+    endpoint_url = endpoint["endpoint_url"]
     # param for endpoint named endpoint_id to avoid clash with builtin param name in Flask.url_for
     resources = Resource.query.filter(
         Resource.organisation == organisation.organisation,
@@ -158,5 +169,6 @@ def data(organisation, dataset, source, endpoint_id):
         "data.html",
         organisation=organisation,
         data=data,
+        endpoint_url=endpoint_url,
         page_data={"title": f"{dataset.name} data"},
     )
