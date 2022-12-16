@@ -3,14 +3,59 @@
 
 {% block content_primary %}
 
-  <p class="govuk-hint">We have the following data for {{ dataset }} from {{ organisation.name | title }}
-    being collected by planning.data.gov.uk from.</p>
+  {% macro renderURL(url) %}
+    <span class="c-url c-url--scroll">{{ url }}</span>
+  {% endmacro %}
 
-  <hr class="govuk-section-break govuk-section-break--l ">
+  {% macro renderDataStat(data, dataset) %}
+    {% set count = data | length %}
+    {{ count | string }} {{ dataset }}{{"'s" if count > 1 else '' }}
+  {% endmacro %}
 
-  {{ data | debug | safe }}
+  <h2 class="govuk-heading-l">About this source</h2>
 
-  <h3 class="govuk-heading-m">Data collected</h3>
+  {{
+    govukSummaryList({
+      'rows': [
+        {
+          'key': {
+            'text': "Provided by"
+          },
+          'value': {
+            'html': organisation.name
+          },
+        },
+        {
+          'key': {
+            'text': "Dataset"
+          },
+          'value': {
+            'html': dataset.name
+          },
+        },
+        {
+          'key': {
+            'text': 'This source contains'
+          },
+          'value': {
+            'text': renderDataStat(data, dataset.name)
+          },
+        },
+        {
+          'key': {
+            'text': "URL"
+          },
+          'value': {
+            'html': renderURL(endpoint_url)
+          },
+        },
+      ]
+    })
+  }}
+
+  <h3 class="govuk-heading-m">Data sample</h3>
+
+  <p>The following is a sample of data from this source. </p>
 
   {% for d in data %}
     {{

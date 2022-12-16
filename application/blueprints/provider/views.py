@@ -81,13 +81,13 @@ def summary(organisation):
                         organisation=s.organisation,
                         dataset=s.dataset,
                     )
-                    name = {"html": f"<a href='{url}'>{s.name}</a>"}
-                    html = f"<span class='govuk-tag govuk-tag--green'>{s.number_of_sources} source"
-                    html += ("s" if s.number_of_sources > 1 else "") + "</span>"
+                    name = {"html": f"{s.name}"}
+                    html = f"<a href='{url}'>{s.number_of_sources} source"
+                    html += ("s" if s.number_of_sources > 1 else "") + "</a>"
                     number_of_sources = {"html": html, "format": "numeric"}
 
                 else:
-                    html = "<span class='govuk-tag govuk-tag--red'>None found</span>"
+                    html = "<span class='govuk-tag govuk-tag--red'>Missing</span>"
                     number_of_sources = {
                         "html": html,
                         "format": "numeric",
@@ -169,6 +169,7 @@ def data(organisation, dataset, source, endpoint_id):
         "data.html",
         organisation=organisation,
         data=data,
+        dataset=dataset,
         endpoint_url=endpoint_url,
-        page_data={"title": f"{dataset.name} data"},
+        page_data={"title": "Data source"},
     )
