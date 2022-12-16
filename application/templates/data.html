@@ -53,11 +53,21 @@
     })
   }}
 
+{#
+  Adam.
+  This needs more work but my thinking was that we can show X number of examples from
+  the source and then link off for the user to view them all and on a map, etc.
 
+  There probably needs to some logic to handle if there are no items, etc.
+
+ #}
+
+ {% set sampleSize = 15 %}
+ {% set numItems = (data | length) %}
 <table class="govuk-table govuk-!-margin-bottom-7">
   <caption class="govuk-!-text-align-left">
     <h2 class="govuk-heading-m">Data sample</h2>
-    <p>The following is a sample of the {{ dataset.name }} data from this source</p>
+    <p>The following is a sample of {{ sampleSize | string }} {{ dataset.name }} data from this source</p>
   </caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
@@ -73,25 +83,13 @@
       </th>
       <td class="govuk-table__cell">{{ d.typology | title }}</td>
     </tr>
-    {% if loop.index > 10 %}{% break %}{% endif %}
+    {% if loop.index > sampleSize %}{% break %}{% endif %}
   {% endfor %}
   </tbody>
 </table>
 
-<p class="govuk-body"><a href="#">View all {{ dataset.name }} records from {{ organisation.name }}</a></p>
-
-  {# {{ d | debug | safe }}
-    {{
-      appDataCard({
-        'title': d.name,
-        'data': {
-          'prefix': d.prefix,
-          'reference': d.reference,
-          'url': 'https://www.planning.data.gov.uk/entity/'+ d.entity|string,
-          'json': d.json,
-          'geometry': d.geometry
-        },
-      })
-    }} #}
+{% if numItems > sampleSize %}
+<p class="govuk-body"><a href="#">View all {{ numItems | string }} {{ dataset.name }} records from {{ organisation.name }}</a></p>
+{% endif %}
 
 {% endblock %}
