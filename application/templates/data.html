@@ -4,7 +4,7 @@
 {% block content_primary %}
 
   {% macro renderURL(url) %}
-    <span class="c-url c-url--scroll">{{ url }}</span>
+    <span class="c-url">{{ url }}</span>
   {% endmacro %}
 
   {% macro renderDataStat(data, dataset) %}
@@ -53,11 +53,34 @@
     })
   }}
 
-  <h3 class="govuk-heading-m">Data sample</h3>
 
-  <p>The following is a sample of data from this source. </p>
-
+<table class="govuk-table govuk-!-margin-bottom-7">
+  <caption class="govuk-!-text-align-left">
+    <h2 class="govuk-heading-m">Data sample</h2>
+    <p>The following is a sample of the {{ dataset.name }} data from this source</p>
+  </caption>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">{{ dataset.name }}</th>
+      <th scope="col" class="govuk-table__header">Type</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
   {% for d in data %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">
+        <a href="https://www.planning.data.gov.uk/entity/{{ d.entity | string}}">{{ d.name }}</a>
+      </th>
+      <td class="govuk-table__cell">{{ d.typology | title }}</td>
+    </tr>
+    {% if loop.index > 10 %}{% break %}{% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+
+<p class="govuk-body"><a href="#">View all {{ dataset.name }} records from {{ organisation.name }}</a></p>
+
+  {# {{ d | debug | safe }}
     {{
       appDataCard({
         'title': d.name,
@@ -69,7 +92,6 @@
           'geometry': d.geometry
         },
       })
-    }}
-  {% endfor %}
+    }} #}
 
 {% endblock %}

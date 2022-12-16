@@ -171,5 +171,5 @@ def data(organisation, dataset, source, endpoint_id):
         data=data,
         dataset=dataset,
         endpoint_url=endpoint_url,
-        page_data={"title": "Data source"},
+        page_data={"title": "Data source", "lede": f"provided by {organisation.name}"},
     )
