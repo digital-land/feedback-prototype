@@ -33,6 +33,7 @@ class Organisation(db.Model):
 class Dataset(db.Model):
     dataset = db.Column(db.Text, primary_key=True, nullable=False)
     name = db.Column(db.Text, nullable=False)
+    plural = db.Column(db.Text, nullable=True)
     text = db.Column(db.Text, nullable=True)
     organisations = db.relationship(
         "Organisation", secondary=organisation_dataset, viewonly=True

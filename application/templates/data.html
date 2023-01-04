@@ -9,7 +9,11 @@
 
   {% macro renderDataStat(data, dataset) %}
     {% set count = data | length %}
-    {{ count | string }} {{ dataset }}{{"'s" if count > 1 else '' }}
+    {%  if count > 1 %}
+      {{ count | string }} {{ dataset.plural }}
+    {% else %}
+      {{ count | string }} {{ dataset.name }}
+    {%  endif %}
   {% endmacro %}
 
   <h2 class="govuk-heading-l">About this source</h2>
@@ -38,7 +42,7 @@
             'text': 'This source contains'
           },
           'value': {
-            'text': renderDataStat(data, dataset.name)
+            'text': renderDataStat(data, dataset)
           },
         },
         {

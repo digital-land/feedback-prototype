@@ -36,7 +36,7 @@ FROM organisation WHERE
 """
 
 dataset_sql = """
-SELECT dataset, name, text
+SELECT dataset, name, plural, text
 FROM dataset;
 """
 
