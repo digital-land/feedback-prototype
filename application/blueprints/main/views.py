@@ -9,15 +9,13 @@ main = Blueprint("main", __name__, template_folder="templates")
 
 @main.route("/")
 def index():
-
-    organisations = Organisation.query.order_by(Organisation.name).all()
-    organisations_by_letter = dict.fromkeys(string.ascii_lowercase)
-    for o in organisations:
+    organisations = dict.fromkeys(string.ascii_lowercase)
+    for o in Organisation.query.order_by(Organisation.name).all():
         key = o.name[0].lower()
-        if organisations_by_letter[key] is None:
-            organisations_by_letter[key] = [o]
+        if organisations[key] is None:
+            organisations[key] = [o]
         else:
-            organisations_by_letter[key].append(o)
+            organisations[key].append(o)
 
     return render_template(
         "homepage.html",
