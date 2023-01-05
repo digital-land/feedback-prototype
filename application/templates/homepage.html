@@ -52,3 +52,31 @@
   {% endfor %}
 
 {% endblock %}
+
+{% block bodyEnd %}
+  <script>
+    let filterItems = document.querySelectorAll('.js-filter-item')
+    function liveSearch() {
+        let search_query = document.getElementById("filter-organisations-list").value;
+        //Use innerText if all contents are visible
+        //Use textContent for including hidden elements
+        for (var i = 0; i < filterItems.length; i++) {
+            if(filterItems[i].textContent.toLowerCase()
+                    .includes(search_query.toLowerCase())) {
+                filterItems[i].classList.remove("govuk-visually-hidden");
+            } else {
+                filterItems[i].classList.add("govuk-visually-hidden");
+            }
+        }
+    }
+    //A little delay
+    let typingTimer;
+    let typeInterval = 500;
+    let searchInput = document.getElementById('filter-organisations-list');
+    searchInput.addEventListener('keyup', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(liveSearch, typeInterval);
+    });
+  </script>
+  {{ super() }}
+{% endblock bodyEnd %}
