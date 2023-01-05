@@ -44,10 +44,11 @@ ordered_provision_reasons = [
 
 # TODO @PaulSmith - override the provision reason copy here
 provision_reason_copy = {
-    "statutory": "The organisation has a statutory duty to provide data to this standard",
-    "expected": "The organisation should provide data as a member of the project developing the specification",
+    "statutory": "Data this organisation has a statutory duty to provide complying to a legislated standard.",
+    "expected": """Data this organisation is expected to provide because they have agreed to as
+    a member of the project developing the specification.""",
     "encouraged": "The organisation is encouraged to provide data to this standard",
-    "prospective": "The organisation is responsible for data covered by this prospective specificaton",
+    "prospective": "Data this organisation could publish to a specification currently being developed.",
     "authoritative": "The organisation is the authoritative source of this data",
     "alternative": "The organisation provides this data",
 }
