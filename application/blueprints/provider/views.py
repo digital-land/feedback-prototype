@@ -74,20 +74,21 @@ def summary(organisation):
         groups = []
         for s in sources:
             if s.provision_reason == p.provision_reason:
-                print(p.provision_reason)
-
+                # print(p.provision_reason)
                 name = {"text": s.name}
+                url = url_for(
+                    "provider.sources",
+                    organisation=s.organisation,
+                    dataset=s.dataset,
+                )
+                html_link = f"<a href='{url}'>Collection report</a>"
+                feedback_link = {"html": html_link, "format": "numeric"}
 
                 if s.number_of_sources > 0:
-                    url = url_for(
-                        "provider.sources",
-                        organisation=s.organisation,
-                        dataset=s.dataset,
-                    )
                     name = {"html": f"{s.name}"}
                     html = f"<a href='{url}'>{s.number_of_sources} source"
                     html += ("s" if s.number_of_sources > 1 else "") + "</a>"
-                    number_of_sources = {"html": html, "format": "numeric"}
+                    number_of_sources = {"html": html}
 
                 else:
                     html = f"""<span class='govuk-tag
@@ -97,10 +98,9 @@ def summary(organisation):
                     title='There are no data sources for this dataset'>0 Sources</span>"""
                     number_of_sources = {
                         "html": html,
-                        "format": "numeric",
                     }
 
-                groups.append((name, number_of_sources))
+                groups.append((name, number_of_sources, feedback_link))
         sources_by_provision_reason[p.provision_reason] = groups
 
     return render_template(

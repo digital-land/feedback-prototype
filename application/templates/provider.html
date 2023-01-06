@@ -14,7 +14,7 @@
 
   <p class="govuk-body-l"> A list of datasets planning.data.gov.uk collects with feedback, help and guidance for {{ page_data.title | title }} to be able provide them.</p>
 
-  {% set itemsLabel = 'Data sources'  %}
+  {% set itemsLabel = 'Sources'  %}
 
   {% for pr in provision_reasons %}
     {% if sources_by_provision_reason[pr.provision_reason] %}
@@ -27,18 +27,20 @@
         govukTable({
           'head': [
             {
-              'text': 'Dataset'
+              'text': 'Dataset',
+              'classes': 'govuk-!-width-one-half'
             },
             {
               'html': '<span class="govuk-visually-hiddens">' + itemsLabel + '</span>',
-              'format': 'numeric'
+            },
+            {
+              'html': '<span class="govuk-visually-hidden">Link</span>',
+               "format": "numeric",
             }
           ],
           'rows': sources_by_provision_reason[pr.provision_reason]
         })
       }}
-
-      {{ sources_by_provision_reason[pr.provision_reason] | debug | safe }}
 
       <hr class="govuk-section-break govuk-section-break--l">
 
