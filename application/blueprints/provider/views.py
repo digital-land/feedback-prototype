@@ -74,6 +74,8 @@ def summary(organisation):
         groups = []
         for s in sources:
             if s.provision_reason == p.provision_reason:
+                print(p.provision_reason)
+
                 name = {"text": s.name}
 
                 if s.number_of_sources > 0:
@@ -88,7 +90,11 @@ def summary(organisation):
                     number_of_sources = {"html": html, "format": "numeric"}
 
                 else:
-                    html = "<span class='govuk-tag govuk-tag--red'>Missing</span>"
+                    html = f"""<span class='govuk-tag
+                    {'govuk-tag--red'
+                    if p.provision_reason == 'statutory' or p.provision_reason == 'expected'
+                    else 'govuk-tag--blue' }'
+                    title='There are no data sources for this dataset'>0 Sources</span>"""
                     number_of_sources = {
                         "html": html,
                         "format": "numeric",
