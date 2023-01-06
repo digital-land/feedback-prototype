@@ -81,20 +81,27 @@ def summary(organisation):
                     organisation=s.organisation,
                     dataset=s.dataset,
                 )
-                html_link = f"<a href='{url}'>Collection report</a>"
+                html_link = f"""<a href='{url}'>
+                            View
+                            <span class='govuk-visually-hidden'> about this dataset</span>
+                            </a>"""
                 feedback_link = {"html": html_link, "format": "numeric"}
 
                 if s.number_of_sources > 0:
+                    # name = {"html": f"{s.name}"}
+                    # html = f"<a href='{url}'>{s.number_of_sources} source"
+                    # html += ("s" if s.number_of_sources > 1 else "") + "</a>"
+                    # number_of_sources = {"html": html}
                     name = {"html": f"{s.name}"}
-                    html = f"<a href='{url}'>{s.number_of_sources} source"
-                    html += ("s" if s.number_of_sources > 1 else "") + "</a>"
+                    html = f"<span class='govuk-tag govuk-tag--green'>{s.number_of_sources} source"
+                    html += ("s" if s.number_of_sources > 1 else "") + "</span>"
                     number_of_sources = {"html": html}
 
                 else:
                     html = f"""<span class='govuk-tag
                     {'govuk-tag--red'
                     if p.provision_reason == 'statutory' or p.provision_reason == 'expected'
-                    else 'govuk-tag--blue' }'
+                    else 'govuk-tag--grey' }'
                     title='There are no data sources for this dataset'>0 Sources</span>"""
                     number_of_sources = {
                         "html": html,
