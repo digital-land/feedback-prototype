@@ -9,19 +9,21 @@
 
 {% block pageTitle %}Feedback{% endblock %}
 
-{% block page_summary_content %}
+{# {% block page_summary_content %}
   <div class="app-!-self-clear">
     <img src="{{ assetPath | default('/static') }}/images/open-digital-planning-logo.svg" width="100" alt="" class="app-!-float-right">
     <p>This organisation is a member of the open digital planning programme.</p>
   </div>
-{% endblock page_summary_content %}
+{% endblock page_summary_content %} #}
 
 {% block content %}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
+    <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l govuk-!-margin-bottom-3">Data explorer</h1>
-      <p id="aria-label-national-map" class="govuk-body-l">Data collected by planning.data.gov.uk from {{ page_data.title | title }}</p>
+      <p id="aria-label-national-map" class="govuk-body-l">
+        Data collected by planning.data.gov.uk from {{ page_data.title | title }}
+      </p>
     </div>
     <div class="govuk-grid-column-full">
 
