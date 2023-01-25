@@ -11,7 +11,7 @@ export default {
         {
           src: [
             'assets/javascripts/dl-national-map-controller.js',
-            'filter-checkbox-extension.js'
+            'assets/javascripts/filter-checkbox-extension.js'
           ],
           dest: 'application/static/javascripts'
         }
