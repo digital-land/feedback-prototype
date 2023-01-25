@@ -118,7 +118,7 @@ def summary(organisation):
         provision_reason_copy=provision_reason_copy,
         page_data={
             "title": org.name,
-            "caption": "Data provider",
+            "caption": "Data from",
             "summary": {"show": True},
         },
     )

@@ -1,9 +1,21 @@
-module.exports = [
-  {
-    input: `assets/javascripts/test.js`,
-    output: {
-      file: `application/static/javascripts/test.js`,
-      format: "iife",
-    }
-  }
-];
+import copy from 'rollup-plugin-copy'
+
+export default {
+  input: `assets/javascripts/application.js`,
+  output: {
+    file: `application/static/javascripts/application.js`,
+  },
+  plugins: [
+    copy({
+      targets: [
+        {
+          src: [
+            'assets/javascripts/dl-national-map-controller.js',
+            'filter-checkbox-extension.js'
+          ],
+          dest: 'application/static/javascripts'
+        }
+      ]
+    })
+  ]
+}

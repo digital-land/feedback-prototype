@@ -3,6 +3,7 @@
 Flask app factory class
 """
 
+from digital_land_frontend.filters import hex_to_rgb_string_filter
 from flask import Flask
 from flask.cli import load_dotenv
 
@@ -58,6 +59,7 @@ def register_context_processors(app):
 
 def register_filters(app):
     app.jinja_env.filters["debug"] = debug
+    app.jinja_env.filters["hex_to_rgb"] = hex_to_rgb_string_filter
     pass
 
 
