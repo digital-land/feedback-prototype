@@ -22,7 +22,7 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l govuk-!-margin-bottom-3">Data explorer</h1>
       <p id="aria-label-national-map" class="govuk-body-l">
-        Data collected by planning.data.gov.uk from {{ page_data.title | title }}
+        Explore data from {{ page_data.title | title }} collected by planning.data.gov.uk.
       </p>
     </div>
     <div class="govuk-grid-column-full">
@@ -96,33 +96,32 @@
 {% endblock %}
 
 {% block bodyEnd %}
-{{ super() }}
+  {{ super() }}
   <script src="/static/javascripts/dl-national-map-controller.js"></script>
-<script src="/static/javascripts/filter-checkbox-extension.js"></script>
-<script>
-  // grab html elements
-  const $controlsList = document.querySelector('[data-module="layer-controls"]')
-  const $zoomMod = document.querySelector('[data-module="zoom-controls"]')
-  // init national map
-  const mapController = new MapController($controlsList, $zoomMod).init({
-    baseTileStyleFilePath: "/static/javascripts/base-tile.json",
-    vectorSource: "https://datasette-tiles.planning.data.gov.uk/-/tiles/dataset_tiles/{z}/{x}/{y}.vector.pbf",
-    LayerControlOptions: {
-      layerURLParamName: "dataset",
-    }
-  })
+  <script src="/static/javascripts/filter-checkbox-extension.js"></script>
+  <script>
+    // grab html elements
+    const $controlsList = document.querySelector('[data-module="layer-controls"]')
+    const $zoomMod = document.querySelector('[data-module="zoom-controls"]')
+    // init national map
+    const mapController = new MapController($controlsList, $zoomMod).init({
+      baseTileStyleFilePath: "/static/javascripts/base-tile.json",
+      vectorSource: "https://datasette-tiles.planning.data.gov.uk/-/tiles/dataset_tiles/{z}/{x}/{y}.vector.pbf",
+      LayerControlOptions: {
+        layerURLParamName: "dataset",
+      }
+    })
 
-  // extend the filter checkbox component to work with the map
-  const $fgStatusUpdate = $controlsList.querySelector('.app-filter-group__status-update')
-  extendFilterCheckboxes($fgStatusUpdate)
+    // extend the filter checkbox component to work with the map
+    const $fgStatusUpdate = $controlsList.querySelector('.app-filter-group__status-update')
+    extendFilterCheckboxes($fgStatusUpdate)
 
-  var $filterCheckboxes = document.querySelectorAll('[data-module="filter-checkboxes"]')
-  $filterCheckboxes.forEach(el => {
-    new window
-      .DLFrontend
-      .FilterCheckboxes(el)
-      .init()
-  })
-</script>
-
+    var $filterCheckboxes = document.querySelectorAll('[data-module="filter-checkboxes"]')
+    $filterCheckboxes.forEach(el => {
+      new window
+        .DLFrontend
+        .FilterCheckboxes(el)
+        .init()
+    })
+  </script>
 {% endblock %}
