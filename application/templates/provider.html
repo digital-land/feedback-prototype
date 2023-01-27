@@ -18,10 +18,148 @@
 
 {% block content %}
 
+  {#
+    ############################################
+    [START] stats experiment
+    ############################################
+
+    @adam - This is an idea for showing some useful metrics or snapshot of the data from
+    an LPA. Not sure about this though. Might be worth a discussion about value and feasibility.
+
+  #}
+
+  {% macro appStat(params={}) %}
+    {% if params.href %}
+      <a href="{{ params.href }}" class="app-stat">
+    {% else %}
+      <div class="app-stat">
+    {% endif %}
+        <span class="app-stat__value">
+          {{ params.value | default('1') }}
+          {%- if params.total -%}<span class="app-stat__value__total">/{{ params.total }}</span>{%- endif -%}
+        </span>
+        <span class="app-stat__label">{{ params.label | default('Label text') }}</span>
+    {% if params.href %}
+      </a>
+    {% else %}
+      </div>
+    {% endif %}
+    <!-- /.app-stat -->
+  {% endmacro %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-3">Data explorer</h1>
-      <p id="aria-label-national-map" class="govuk-body-l">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+          {{
+            appStat({
+              'value': '10',
+              'total': '14',
+              'href': '#datasets',
+              'label': 'Datasets'
+            })
+          }}
+        </div>
+        <!-- /.govuk-grid-column-one-quarter -->
+        <div class="govuk-grid-column-one-quarter">
+          {{
+            appStat({
+              'value': '20',
+              'href': '#sources',
+              'label': 'Sources'
+            })
+          }}
+        </div>
+        <!-- /.govuk-grid-column-one-quarter -->
+        <div class="govuk-grid-column-one-quarter">
+          {{
+            appStat({
+              'value': '23',
+              'href': '#issues',
+              'label': 'Issues'
+            })
+          }}
+        </div>
+        <!-- /.govuk-grid-column-one-quarter -->
+      </div>
+      <!-- /.govuk-grid-row -->
+
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-!-margin-bottom-7 govuk-section-break--visible">
+
+  {#
+    ############################################
+    [END] stats experiment
+    ############################################
+  #}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <table class="govuk-table govuk-!-margin-bottom-8">
+        <caption class="govuk-table__caption">
+          <div class="govuk-heading-l govuk-!-margin-bottom-3">Datasets</div>
+          <div class="govuk-body">This table shows data planning.data.gov.uk has collected from {{ page_data.title | title }}</div>
+        </caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">Dataset</th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"">Issues</th>
+            {# <th scope="col" class="govuk-table__header govuk-!-width-one-quarter r govuk-!-text-align-right">
+              <span class="govuk-visually-hidden">Action</span>
+            </th> #}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="">Article 4 Directions</a>
+            </td>
+            <td class="govuk-table__cell">0 Issues</td>
+            {# <td class="govuk-table__cell govuk-!-text-align-right">
+              <a href="#">View data</a>
+            </td> #}
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="">Article 4 Direction Areas</a>
+            </td>
+            <td class="govuk-table__cell">0 Issues</td>
+            {# <td class="govuk-table__cell govuk-!-text-align-right">
+              <a href="#">View data</a>
+            </td> #}
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="">Conservation Areas</a>
+            </td>
+            <td class="govuk-table__cell">0 Issues</td>
+            {# <td class="govuk-table__cell govuk-!-text-align-right">
+              <a href="#">View data</a>
+            </td> #}
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="">Conservation Area geometries</a>
+            </td>
+            <td class="govuk-table__cell">0 Issues</td>
+            {# <td class="govuk-table__cell govuk-!-text-align-right">
+              <a href="#">View data</a>
+            </td> #}
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-3">View this data</h2>
+      <p id="aria-label-national-map" class="govuk-body">
         Explore data from {{ page_data.title | title }} collected by planning.data.gov.uk.
       </p>
     </div>
