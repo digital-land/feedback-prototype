@@ -50,6 +50,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <div class="govuk-grid-row">
+
+        {# links to the table below which lists all the datasets #}
         <div class="govuk-grid-column-one-quarter">
           {{
             appStat({
@@ -61,22 +63,26 @@
           }}
         </div>
         <!-- /.govuk-grid-column-one-quarter -->
+
+        {# links to an aggregate list of all 'notes' for this organisation #}
+        <div class="govuk-grid-column-one-quarter">
+          {{
+            appStat({
+              'value': '7',
+              'href': './notes',
+              'label': 'Notes'
+            })
+          }}
+        </div>
+        <!-- /.govuk-grid-column-one-quarter -->
+
+        {# links to an aggregate list of all source urls for this organisation #}
         <div class="govuk-grid-column-one-quarter">
           {{
             appStat({
               'value': '20',
               'href': '#sources',
               'label': 'Sources'
-            })
-          }}
-        </div>
-        <!-- /.govuk-grid-column-one-quarter -->
-        <div class="govuk-grid-column-one-quarter">
-          {{
-            appStat({
-              'value': '23',
-              'href': '#issues',
-              'label': 'Issues'
             })
           }}
         </div>
@@ -98,18 +104,22 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      <table class="govuk-table govuk-!-margin-bottom-8">
+      <table class="govuk-table" id="datasets">
         <caption class="govuk-table__caption">
           <div class="govuk-heading-l govuk-!-margin-bottom-3">Datasets</div>
-          <div class="govuk-body">This table shows data planning.data.gov.uk has collected from {{ page_data.title | title }}</div>
+          <div class="govuk-body">This table shows the datasets the planning data platform will attempt to collect from {{ page_data.title | title }}.</div>
         </caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header govuk-!-width-one-half">Dataset</th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"">Issues</th>
-            {# <th scope="col" class="govuk-table__header govuk-!-width-one-quarter r govuk-!-text-align-right">
-              <span class="govuk-visually-hidden">Action</span>
-            </th> #}
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+              Dataset
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"">
+              Notes
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter r govuk-!-text-align-right">
+              Status
+            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -117,56 +127,81 @@
             <td class="govuk-table__cell">
               <a href="">Article 4 Directions</a>
             </td>
-            <td class="govuk-table__cell">0 Issues</td>
-            {# <td class="govuk-table__cell govuk-!-text-align-right">
-              <a href="#">View data</a>
-            </td> #}
+            <td class="govuk-table__cell">0 notes</td>
+            <td class="govuk-table__cell govuk-!-text-align-right">
+              {{ govukTag({
+                'text': 'collecting',
+                'classes': 'govuk-tag--blue'
+              }) }}
+            </td>
           </tr>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <a href="">Article 4 Direction Areas</a>
             </td>
-            <td class="govuk-table__cell">0 Issues</td>
-            {# <td class="govuk-table__cell govuk-!-text-align-right">
-              <a href="#">View data</a>
-            </td> #}
+            <td class="govuk-table__cell">5 notes</td>
+            <td class="govuk-table__cell govuk-!-text-align-right">
+              {{ govukTag({
+                'text': 'collecting',
+                'classes': 'govuk-tag--blue'
+              }) }}
+            </td>
           </tr>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <a href="">Conservation Areas</a>
             </td>
-            <td class="govuk-table__cell">0 Issues</td>
-            {# <td class="govuk-table__cell govuk-!-text-align-right">
-              <a href="#">View data</a>
-            </td> #}
+            <td class="govuk-table__cell">2 notes</td>
+            <td class="govuk-table__cell govuk-!-text-align-right">
+              {{ govukTag({
+                'text': 'collecting',
+                'classes': 'govuk-tag--blue'
+              }) }}
+            </td>
           </tr>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <a href="">Conservation Area geometries</a>
             </td>
-            <td class="govuk-table__cell">0 Issues</td>
-            {# <td class="govuk-table__cell govuk-!-text-align-right">
-              <a href="#">View data</a>
-            </td> #}
+            <td class="govuk-table__cell">0 notes</td>
+            <td class="govuk-table__cell govuk-!-text-align-right">
+              {{ govukTag({
+                'text': 'Not found'
+              }) }}
+            </td>
           </tr>
         </tbody>
       </table>
 
+      {% set tableDetails  %}
+      <p>This table shows each dataset The Department for Levelling Up attempts to collect data for from {{ page_data.title | title }}.</p>
+      <p><strong>Notes</strong> - The number of notes about this dataset and the data being collected.</p>
+      <p><strong>Status</strong> - If planning.data.govuk is actively collecting or is unable to find and collect data.</p>
+      {% endset %}
+
+      {{
+        govukDetails({
+          'summaryText': 'Help understanding this table',
+          'html': tableDetails
+        })
+      }}
+
     </div>
   </div>
 
+  <hr class="govuk-section-break govuk-!-margin-bottom-6 govuk-section-break--visibles">
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h2 class="govuk-heading-m govuk-!-margin-bottom-3">View this data</h2>
+      <h2 class="govuk-heading-l govuk-!-margin-bottom-3">View this data</h2>
       <p id="aria-label-national-map" class="govuk-body">
-        Explore data from {{ page_data.title | title }} collected by planning.data.gov.uk.
+        Data collected from {{ page_data.title | title }} by planning.data.gov.uk can be explored on the following map.
       </p>
     </div>
     <div class="govuk-grid-column-full">
 
       {% set mapHTML %}
-        <div class="dl-map__wrapper" style="min-height: 700px;">
+        <div class="dl-map__wrapper govuk-!-margin-bottom-6" style="min-height: 700px;">
 
           <div class="zoom-controls" data-module="zoom-controls">
             <button class="zoom-controls__btn" data-zoom-control="in">
@@ -228,8 +263,23 @@
 
       {{ mapHTML }}
 
+      <p>Have you found a problem with this data? You can <a href="#">Report a data problem</a> for us to respond to.</p>
+
     </div>
   </div>
+  <!-- /.govuk-grid-row -->
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-!-margin-bottom-0 govuk-section-break--visibl">
+
+  {# <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Help to publish planning data</h2>
+    </div>
+    <div class="govuk-grid-column-full">
+
+    </div>
+  </div>
+  <!-- /.govuk-grid-row --> #}
 
 {% endblock %}
 
