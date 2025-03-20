@@ -1,5 +1,9 @@
 # feedback-prototype
 
+# ⚠️ Inactive
+
+This application is no longer deployed anywhere. The heroku app has been deleted and beyond reference data, list of organisations and datasets
+not data was collected and no database backup was required.
 
 ## Getting started
 
